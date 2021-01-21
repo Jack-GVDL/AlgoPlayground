@@ -1,0 +1,4 @@
+ToolSet: w64 6.0 (local)@D:\LanguageCore_CPP\mingw64
+Options: 
+
+Options:
