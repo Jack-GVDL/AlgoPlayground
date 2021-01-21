@@ -1,0 +1,3 @@
+"D:\JetBrains\CLion 2020.3.1\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\AlgoritemImplementation.dir/objects.a
+D:\LanguageCore_CPP\mingw64\bin\ar.exe cr CMakeFiles\AlgoritemImplementation.dir/objects.a @CMakeFiles\AlgoritemImplementation.dir\objects1.rsp
+D:\LanguageCore_CPP\mingw64\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\AlgoritemImplementation.dir/objects.a -Wl,--no-whole-archive  -o AlgoritemImplementation.exe -Wl,--out-implib,libAlgoritemImplementation.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\AlgoritemImplementation.dir\linklibs.rsp

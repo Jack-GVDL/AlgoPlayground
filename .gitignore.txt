@@ -1,0 +1,3 @@
+# Folder
+.idea
+cmake-build-debug

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="AlgoritemImplementation"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="AlgoritemImplementation">
+				<Option output="D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/AlgoritemImplementation.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="D:/LanguageCore_CPP/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="D:/LanguageCore_CPP/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="D:/LanguageCore_CPP/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="D:/LanguageCore_CPP/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="D:/LanguageCore_CPP/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="D:/LanguageCore_CPP/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 AlgoritemImplementation"/>
+					<CompileFile command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="AlgoritemImplementation/fast">
+				<Option output="D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/AlgoritemImplementation.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="D:/LanguageCore_CPP/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="D:/LanguageCore_CPP/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="D:/LanguageCore_CPP/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="D:/LanguageCore_CPP/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="D:/LanguageCore_CPP/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="D:/LanguageCore_CPP/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 AlgoritemImplementation/fast"/>
+					<CompileFile command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/LanguageCore_CPP/mingw64/bin/mingw32-make.exe -f &quot;D:/LearningMaterial/Project/AlgorithmImplementation/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="D:/LearningMaterial/Project/AlgorithmImplementation/Hash/Hash.h">
+			<Option target="AlgoritemImplementation"/>
+		</Unit>
+		<Unit filename="D:/LearningMaterial/Project/AlgorithmImplementation/Hash/Hash_Base.h">
+			<Option target="AlgoritemImplementation"/>
+		</Unit>
+		<Unit filename="D:/LearningMaterial/Project/AlgorithmImplementation/Hash/Hash_Simple.h">
+			<Option target="AlgoritemImplementation"/>
+		</Unit>
+		<Unit filename="D:/LearningMaterial/Project/AlgorithmImplementation/Hash/Hash_Test.h">
+			<Option target="AlgoritemImplementation"/>
+		</Unit>
+		<Unit filename="D:/LearningMaterial/Project/AlgorithmImplementation/main.cpp">
+			<Option target="AlgoritemImplementation"/>
+		</Unit>
+		<Unit filename="D:/LearningMaterial/Project/AlgorithmImplementation/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
