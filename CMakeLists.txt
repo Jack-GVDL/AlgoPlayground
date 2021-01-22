@@ -3,4 +3,6 @@ project(AlgoritemImplementation)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(AlgoritemImplementation main.cpp Hash/Hash_Base.h Hash/Hash_Simple.h Hash/Hash.h Hash/Hash_Test.h)
+include_directories(Utility)
+
+add_executable(AlgoritemImplementation main.cpp Map/UnorderedMap.h Map/UnorderedMap_Simple.h Map/Map.h Map/Hash_Test.h Utility/Pair.h Utility/Utility.h Map/UnorderedMap_Dynamic.h Utility/Bool.h)

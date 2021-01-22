@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Hash/Hash.h"
+#include "Map/Map.h"
 
 
 // Namespace
@@ -29,7 +29,7 @@ bool testHash() {
 	std::function<std::string(const int)>	func_value_to_string	= [](const int value) 				-> std::string 	{ return std::to_string(value); };
 
 	// ----- operation_list list -----
-	std::pair<HashOperation, std::pair<int, int>> operation_list[] = {
+	Pair<HashOperation, Pair<int, int>> operation_list[] = {
 		makeHashOperation(HashOperation::INSERT,	0, 0),
 		makeHashOperation(HashOperation::INSERT,	-1, -1),
 		makeHashOperation(HashOperation::INSERT,	size_container, size_container),
@@ -43,13 +43,13 @@ bool testHash() {
 
 	// ----- hash table list -----
 	// hash table list
-	Hash_Base<int, int>* hash_list[] = {
-			new Hash_Simple<int, int>(size_container)
+	UnorderedMap<int, int>* hash_list[] = {
+			new UnorderedMap_Simple<int, int>(size_container)
 	};
 
 	// ----- get list size -----
-	int size_operation	= sizeof(operation_list) / sizeof(std::pair<int, std::pair<int, int>>);
-	int size_table		= sizeof(hash_list) / sizeof(Hash_Base<int, int>*);
+	int size_operation	= sizeof(operation_list) / sizeof(Pair<int, Pair<int, int>>);
+	int size_table		= sizeof(hash_list) / sizeof(UnorderedMap<int, int>*);
 
 	// ----- testing -----
 	// actual testing

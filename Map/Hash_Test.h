@@ -9,7 +9,7 @@
 
 
 // Import
-#include "Hash_Base.h"
+#include "UnorderedMap.h"
 #include <string>
 #include <functional>
 
@@ -35,7 +35,7 @@ enum HashOperation {
 
 // Function - Prototype
 template <class Key, class Value>
-std::pair<HashOperation, std::pair<Key, Value>> maskHashOperation(
+Pair<HashOperation, Pair<Key, Value>> maskHashOperation(
 		HashOperation 	operation,
 		Key 			key,
 		Value 			value);
@@ -43,8 +43,8 @@ std::pair<HashOperation, std::pair<Key, Value>> maskHashOperation(
 
 template <class Key, class Value>
 int runHash(
-		Hash_Base<Key, Value> 							&hash_table,
-		std::pair<HashOperation, std::pair<Key, Value>> *operation,
+		UnorderedMap<Key, Value> 							&hash_table,
+		Pair<HashOperation, Pair<Key, Value>> *operation,
 		int 											size_operation,
 		const std::function<void(const std::string&)>	*func_log 				= nullptr,
 		const std::function<std::string(const Key)> 	*func_key_to_string 	= nullptr,
@@ -53,14 +53,14 @@ int runHash(
 
 template <class Key, class Value>
 std::string getOperationString(
-		const std::pair<HashOperation, std::pair<Key, Value>>	&operation,
+		const Pair<HashOperation, Pair<Key, Value>>	&operation,
 		const std::function<std::string(const Key)> 			*func_key_to_string,
 		const std::function<std::string(const Value)>			*func_value_to_string);
 
 
 // Function - Implementation
 template <class Key, class Value>
-std::pair<HashOperation, std::pair<Key, Value>> makeHashOperation(
+Pair<HashOperation, Pair<Key, Value>> makeHashOperation(
 		HashOperation 	operation,
 		Key 			key,
 		Value 			value) {
@@ -68,23 +68,23 @@ std::pair<HashOperation, std::pair<Key, Value>> makeHashOperation(
 	// fix parameter
 	switch (operation) {
 		case HashOperation::INSERT:
-			return std::pair<HashOperation, std::pair<Key, Value>>(operation, std::pair<Key, Value>(key, value));
+			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(key, value));
 		case HashOperation::ERASE:
-			return std::pair<HashOperation, std::pair<Key, Value>>(operation, std::pair<Key, Value>(key, 0));
+			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(key, 0));
 		case HashOperation::CLEAR:
-			return std::pair<HashOperation, std::pair<Key, Value>>(operation, std::pair<Key, Value>(0, 0));
+			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(0, 0));
 		case HashOperation::AT:
-			return std::pair<HashOperation, std::pair<Key, Value>>(operation, std::pair<Key, Value>(key, value));
+			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(key, value));
 		default:
-			return std::pair<HashOperation, std::pair<Key, Value>>(HashOperation::NONE, std::pair<Key, Value>(0, 0));
+			return Pair<HashOperation, Pair<Key, Value>>(HashOperation::NONE, Pair<Key, Value>(0, 0));
 	}
 }
 
 
 template <class Key, class Value>
 int runHash(
-		Hash_Base<Key, Value> 							&hash_table,
-		std::pair<HashOperation, std::pair<Key, Value>> *operation,
+		UnorderedMap<Key, Value> 							&hash_table,
+		Pair<HashOperation, Pair<Key, Value>> *operation,
 		int 											size_operation,
 		const std::function<void(const std::string&)>	*func_log,
 		const std::function<std::string(const Key)> 	*func_key_to_string,
@@ -151,7 +151,7 @@ int runHash(
 
 template <class Key, class Value>
 std::string getOperationString(
-		const std::pair<HashOperation, std::pair<Key, Value>>	&operation,
+		const Pair<HashOperation, Pair<Key, Value>>	&operation,
 		const std::function<std::string(Key)> 					*func_key_to_string,
 		const std::function<std::string(Value)>					*func_value_to_string) {
 

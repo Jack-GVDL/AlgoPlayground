@@ -2,12 +2,13 @@
 // Date of creation: 2021-01-20
 // Email: jacktsetcy@gmail.com
 //
-#ifndef ALGORITEMIMPLEMENTATION_HASH_BASE_H
-#define ALGORITEMIMPLEMENTATION_HASH_BASE_H
+#ifndef ALGORITEMIMPLEMENTATION_UNORDEREDMAP_H
+#define ALGORITEMIMPLEMENTATION_UNORDEREDMAP_H
 
 
 // Import
-#include <utility>
+//#include <utility>
+#include <Utility.h>
 
 
 // Namespace
@@ -16,7 +17,7 @@ namespace Algo {
 
 // Class
 template <class Key, class Value>
-class Hash_Base {
+class UnorderedMap {
 // Data
 public:
     // ...
@@ -24,10 +25,10 @@ public:
 // Function
 public:
     // init and del
-//    Hash_Base(){
+//    UnorderedMap(){
 //    }
 
-//    ~Hash_Base(){
+//    ~UnorderedMap(){
 //    }
 
     // operation
@@ -45,4 +46,4 @@ public:
 };
 
 
-#endif //ALGORITEMIMPLEMENTATION_HASH_BASE_H
+#endif //ALGORITEMIMPLEMENTATION_UNORDEREDMAP_H
