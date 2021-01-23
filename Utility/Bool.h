@@ -35,6 +35,18 @@ struct Bool {
 protected:
 	char _value;
 
+// Function
+public:
+	// init and del
+	Bool(bool value) {
+		*this = value;
+	}
+
+	template <class T>
+	Bool(T other) {
+		*this = other;
+	}
+
 // Operator Overload
 public:
 	Bool& operator= (bool other) {

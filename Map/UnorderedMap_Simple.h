@@ -18,9 +18,9 @@ namespace Algo {
 
 // Function Prototype
 template<class Key>
-inline int _getHash_(const Key &key, int size_container);
+inline int _getHash_Simple_(const Key &key, int size_container);
 
-inline int _getHash_(const int &key, int size_container);
+inline int _getHash_Simple_(const int &key, int size_container);
 
 
 // Data Structure
@@ -38,36 +38,47 @@ public:
 	explicit UnorderedMap_Simple(int size_container_) :
 			size_container(size_container_),
 			size_allocated(0) {
+
+		// the actual size of container is size_container + 1
+		// the extra space if for storing nullptr for end marker used in searching
+		size_container = size_container + 1;
+
 		container = new Pair<Key, Value> *[size_container];
 		for (int i = 0; i < size_container; ++i) container[i] = nullptr;
 	}
 
 	~UnorderedMap_Simple() {
+		// delete pair (insider container)
+		for (int i = 0; i < size_container; ++i) delete container[i];
+
+		// delete container
 		delete[] container;
 	}
 
 	// operation
 	void insert(const Key &key, const Value &value) override {
-		// check if insertion is available or not
-		if (size_allocated == size_container) return;
-
 		// get the box
 		int hash = getHash(key);
 		while (container[hash] != nullptr && container[hash]->first != key) {
 			hash = getHash(hash + 1);
 		}
 
-		// if box not exist,	create new pair
-		// else,				set value
-		if (container[hash] == nullptr) {
-			auto pair_new = new Pair<Key, Value>();
-			pair_new->first = key;
-			pair_new->second = value;
-			container[hash] = pair_new;
-			return;
-		} else {
+		// check if key is already inside the map or not
+		// if is inside, then replace the value
+		if (container[hash] != nullptr) {
 			container[hash]->second = value;
+			return;
 		}
+
+		// check if insertion is available or not
+		// remember there always one box for storing end marker
+		if (size_allocated + 1 == size_container) return;
+
+		// actual insertion
+		auto pair_new 		= new Pair<Key, Value>();
+		pair_new->first 	= key;
+		pair_new->second 	= value;
+		container[hash] 	= pair_new;
 
 		// update stat
 		size_allocated++;
@@ -130,11 +141,10 @@ public:
 		return size_allocated == 0;
 	}
 
-// protected:
-public:
+protected:
 	// operation
 	int getHash(const Key &key) {
-		return _getHash_(key, size_container);
+		return _getHash_Simple_(key, size_container);
 	}
 
 // Operator Overload
@@ -151,11 +161,11 @@ public:
 
 // Function - Implementation
 template<class Key>
-inline int _getHash_(const Key &key, int size_container) {
+inline int _getHash_Simple_(const Key &key, int size_container) {
 	return key % size_container;
 }
 
-inline int _getHash_(const int &key, int size_container) {
+inline int _getHash_Simple_(const int &key, int size_container) {
 	return abs(key) % size_container;
 }
 

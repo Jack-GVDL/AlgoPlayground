@@ -12,7 +12,7 @@
 #include "UnorderedMap.h"
 #include "UnorderedMap_Simple.h"
 #include "UnorderedMap_Dynamic.h"
-#include "Hash_Test.h"
+#include "Map_Test.h"
 
 
 // Data Structure
