@@ -2,8 +2,8 @@
 // Date of creation: 2021-01-20
 // Email: jacktsetcy@gmail.com
 //
-#ifndef ALGORITEMIMPLEMENTATION_UNORDEREDMAP_H
-#define ALGORITEMIMPLEMENTATION_UNORDEREDMAP_H
+#ifndef ALGORITEMIMPLEMENTATION_UNORDEREDMAP_BASE_H
+#define ALGORITEMIMPLEMENTATION_UNORDEREDMAP_BASE_H
 
 
 // Import
@@ -16,8 +16,9 @@ namespace Algo {
 
 
 // Class
+// TODO: change name to _UnorderedMap_ or UnorderedMap_Base
 template <class Key, class Value>
-class UnorderedMap {
+class _UnorderedMap_ {
 // Data
 public:
     // ...
@@ -25,10 +26,10 @@ public:
 // Function
 public:
     // init and del
-//    UnorderedMap(){
+//    _UnorderedMap_(){
 //    }
 
-//    ~UnorderedMap(){
+//    ~_UnorderedMap_(){
 //    }
 
     // operation
@@ -39,6 +40,12 @@ public:
 
     virtual int size() = 0;
     virtual bool empty() = 0;
+
+// Operator Overload
+public:
+	Value& operator[](const Key &key) {
+		return at(key);
+	}
 };
 
 
@@ -46,4 +53,4 @@ public:
 };
 
 
-#endif //ALGORITEMIMPLEMENTATION_UNORDEREDMAP_H
+#endif //ALGORITEMIMPLEMENTATION_UNORDEREDMAP_BASE_H

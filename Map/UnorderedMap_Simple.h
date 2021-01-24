@@ -9,7 +9,7 @@
 
 
 // Import
-#include "UnorderedMap.h"
+#include "UnorderedMap_Base.h"
 
 
 // Namespace
@@ -19,13 +19,12 @@ namespace Algo {
 // Function Prototype
 template<class Key>
 inline int _getHash_Simple_(const Key &key, int size_container);
-
 inline int _getHash_Simple_(const int &key, int size_container);
 
 
 // Data Structure
 template<class Key, class Value>
-class UnorderedMap_Simple : public UnorderedMap<Key, Value> {
+class UnorderedMap_Simple : public _UnorderedMap_<Key, Value> {
 // Data
 protected:
 	Pair<Key, Value> **container;
@@ -36,9 +35,9 @@ protected:
 public:
 	// init and del
 	explicit UnorderedMap_Simple(int size_container_) :
-			size_container(size_container_),
-			size_allocated(0) {
-
+	size_container(size_container_),
+	size_allocated(0)
+	{
 		// the actual size of container is size_container + 1
 		// the extra space if for storing nullptr for end marker used in searching
 		size_container = size_container + 1;
@@ -149,9 +148,7 @@ protected:
 
 // Operator Overload
 public:
-	Value &operator[](const Key &key) {
-		return at(key);
-	}
+	// ...
 };
 
 

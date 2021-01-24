@@ -75,6 +75,10 @@ public:
 		return _value != other._value;
 	}
 
+	bool operator! () const {
+		return _value != 0;
+	}
+
 	template <class T>
 	T operator| (T other) const {
 		return _value | other;
@@ -93,6 +97,13 @@ public:
 	template <class T>
 	unsigned char operator>> (T shift) const {
 		return _value >> shift;
+	}
+
+	// conversion operator
+	// reference
+	// - https://stackoverflow.com/questions/4600295/what-is-the-meaning-of-operator-bool-const
+	explicit operator bool() const {
+		return _value == 1;
 	}
 };
 

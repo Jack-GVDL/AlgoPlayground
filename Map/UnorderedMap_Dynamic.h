@@ -9,7 +9,7 @@
 
 
 // Import
-#include "UnorderedMap.h"
+#include "UnorderedMap_Base.h"
 
 
 // Namespace-Begin - Algo
@@ -18,10 +18,10 @@ namespace Algo {
 
 // Function Prototype
 template <class Key>
-inline int _getHash_Dynamic_Local_(const Key &key, int index);
+inline unsigned int _getHash_Dynamic_Local_(const Key &key, int index, unsigned int mask);
 
 template <class Key>
-inline int _getHash_Dynamic_Global_(const Key &key, int index);
+inline unsigned int _getHash_Dynamic_Global_(const Key &key, int index);
 
 
 // Data Structure
@@ -32,13 +32,18 @@ public:
     int 				index_local;
     Pair<Key, Value>*	*container;
     int					size_container;
+    int					size_allocated;
+
+    Key					default_none;
 
 // Function
 public:
     // init and del
     _HashBucket_(int index, int size_container):
 			index_local(index),
-			size_container(size_container)
+			size_container(size_container),
+			size_allocated(0),
+			default_none(0)
 	{
     	container = new Pair<Key, Value>* [size_container];
     	for (int i = 0; i < size_container; ++i) container[i] = nullptr;
@@ -60,7 +65,7 @@ public:
 
     	// replace
     	// container[hash]->first != key already checked
-    	if (container[hash]->first != nullptr) {
+    	if (container[hash] != nullptr) {
     		container[hash]->second = value;
     		return true;
     	}
@@ -71,24 +76,31 @@ public:
     	pair_new->second	= value;
     	container[hash]		= pair_new;
 
+    	// update stat
+    	size_allocated++;
     	return true;
     }
 
-    void erase(const Key &key) {
+    Bool erase(const Key &key) {
     	// find the box
     	int hash = getHash(key);
-    	if (container[hash] == nullptr || container[hash]->first != key) return;
+    	if (container[hash] == nullptr || container[hash]->first != key) return false;
 
     	// delete
     	delete container[hash];
     	container[hash] = nullptr;
+
+    	// update stat
+    	size_allocated--;
+
+    	return true;
     }
 
     // assumed: key must be existed
     Value &at(const Key &key) {
     	// find the box
     	int hash = getHash(key);
-    	if (container[hash] == nullptr || container[hash]->first != key) return 0;
+    	if (container[hash] == nullptr || container[hash]->first != key) return default_none;
 
     	// at
     	return container[hash]->second;
@@ -96,14 +108,24 @@ public:
 
 protected:
 	// operation
-	int getHash(const Key &key) {
-    	return _getHash_Dynamic_Local_(key, index_local);
+	unsigned int getHash(const Key &key) {
+    	// get leading one
+    	// reference
+    	// - https://stackoverflow.com/questions/671815/what-is-the-fastest-most-efficient-way-to-find-the-highest-set-bit-msb-in-an-i
+    	unsigned int 	i		= 0;
+    	unsigned int 	mask 	= size_container;
+    	while (mask >>= 1) i++;
+
+    	// create mask
+    	mask = (1 << i) - 1;
+
+    	return _getHash_Dynamic_Local_(key, index_local, mask);
     }
 };
 
 
 template <class Key, class Value>
-class UnorderedMap_Dynamic: public UnorderedMap<Key, Value> {
+class UnorderedMap_Dynamic: public _UnorderedMap_<Key, Value> {
 // Data
 protected:
 	// size of bucket should a value of base 2
@@ -175,7 +197,7 @@ public:
     	int hash_old = hash_global;
     	int hash_new = hash_global | (1 << index_global);
 
-    	for (int i = 0; i < bucket_old.size_container; ++i) {
+    	for (int i = 0; i < bucket_old->size_container; ++i) {
     		const Key 	&key_temp = bucket_old->container[i]->first;
     		const int	hash_temp = getHash(key_temp, index_global + 1);  // need to use the new hash function
 
@@ -194,7 +216,7 @@ public:
     	int size_bucket_list_old	= 1 << index_global;
     	int size_bucket_list_new	= 1 << (index_global + 1);
 
-    	auto bucket_list_old = bucket_old;
+    	auto bucket_list_old = bucket_list;
     	auto bucket_list_new = new _HashBucket_<Key, Value>* [size_bucket_list_new];
 
     	// move bucket from old to new bucket_list
@@ -221,9 +243,16 @@ public:
 		size_allocated++;
 	}
 
-	// TODO:
 	void erase(const Key &key) override {
+    	// get the box
+    	int		hash_global = getHash(key);
+    	auto	bucket		= bucket_list[hash_global];
 
+    	// actual erase
+    	if (!bucket->erase(key)) return;
+
+    	// update stat
+    	size_allocated--;
 	}
 
 	void clear() override {
@@ -270,9 +299,9 @@ public:
 
 protected:
 	// operation
-	int getHash(const Key &key, int index = -1) {
+	unsigned int getHash(const Key &key, int index = -1) {
     	if (index == -1) index = index_global;
-    	return _getHash_Dynamic_Global_(key, index_global);
+    	return _getHash_Dynamic_Global_(key, index);
     }
 };
 
@@ -283,19 +312,29 @@ protected:
 
 // Function - Implementation
 template <class Key>
-inline int _getHash_Dynamic_Local_(const Key &key, int index) {
-	return key >> index;
+inline unsigned int _getHash_Dynamic_Local_(const Key &key, int index, unsigned int mask) {
+	// force cast key to unsigned int
+	// i.e. binary content unchanged
+	unsigned int temp = *((unsigned int*)(&key));
+
+	return (temp >> index) & mask;
 }
 
+
 template <class Key>
-inline int _getHash_Dynamic_Global_(const Key &key, int index) {
+inline unsigned int _getHash_Dynamic_Global_(const Key &key, int index) {
+	// force cast key to unsigned int
+	// i.e. binary content unchanged
+	unsigned int temp = *((unsigned int*)(&key));
+
+
 	// (1 << index) - 1
 	// fill ones, starting from lsb with number 1 == index
 	//
 	// e.g. index = 2
 	// (1 << index): 		100
 	// (1 << index) - 1:	011
-	return key & ((1 << index) - 1);
+	return (unsigned int)(temp & ((1 << index) - 1));
 }
 
 

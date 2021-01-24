@@ -37,23 +37,31 @@ bool testHash() {
 		makeHashOperation(HashOperation::ERASE, 	size_container + 2, 0),
 		makeHashOperation(HashOperation::ERASE, 	size_container + 1, 0),
 		makeHashOperation(HashOperation::INSERT,	size_container * 2 + 1, size_container * 2 + 1),
+		makeHashOperation(HashOperation::AT,		0, 0),
+		makeHashOperation(HashOperation::AT,		-1, -1),
 		makeHashOperation(HashOperation::AT, 		size_container, size_container),
+		makeHashOperation(HashOperation::AT,		size_container * 2 + 1, size_container * 2 + 1),
 		makeHashOperation(HashOperation::CLEAR, 	0, 0)
 	};
 
 	// ----- hash table list -----
 	// hash table list
-	UnorderedMap<int, int>* hash_list[] = {
-			new UnorderedMap_Simple<int, int>(size_container)
+	_UnorderedMap_<int, int>* hash_list[] = {
+			new UnorderedMap_Simple<int, int>(size_container),
+			new UnorderedMap_Dynamic<int, int>(4)
 	};
 
 	// ----- get list size -----
 	int size_operation	= sizeof(operation_list) / sizeof(Pair<int, Pair<int, int>>);
-	int size_table		= sizeof(hash_list) / sizeof(UnorderedMap<int, int>*);
+	int size_table		= sizeof(hash_list) / sizeof(_UnorderedMap_<int, int>*);
 
 	// ----- testing -----
 	// actual testing
 	for (int i = 0; i < size_table; ++i) {
+
+		// separation
+		func_log(std::string("\n----- test -----\n"));
+
 		int result = runHash(
 						*hash_list[i],
 						operation_list,

@@ -9,7 +9,7 @@
 
 
 // Import
-#include "UnorderedMap.h"
+#include "UnorderedMap_Base.h"
 #include <string>
 #include <functional>
 
@@ -24,6 +24,7 @@ enum HashOperation {
 	ERASE,
 	CLEAR,
 	AT,
+	NOT_AT,
 	NONE,
 	SIZE_ENUM
 };
@@ -43,7 +44,7 @@ Pair<HashOperation, Pair<Key, Value>> maskHashOperation(
 
 template <class Key, class Value>
 int runHash(
-		UnorderedMap<Key, Value> 							&hash_table,
+		_UnorderedMap_<Key, Value> 							&hash_table,
 		Pair<HashOperation, Pair<Key, Value>> *operation,
 		int 											size_operation,
 		const std::function<void(const std::string&)>	*func_log 				= nullptr,
@@ -75,6 +76,8 @@ Pair<HashOperation, Pair<Key, Value>> makeHashOperation(
 			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(0, 0));
 		case HashOperation::AT:
 			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(key, value));
+		case HashOperation::NOT_AT:
+			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(key, 0));
 		default:
 			return Pair<HashOperation, Pair<Key, Value>>(HashOperation::NONE, Pair<Key, Value>(0, 0));
 	}
@@ -83,7 +86,7 @@ Pair<HashOperation, Pair<Key, Value>> makeHashOperation(
 
 template <class Key, class Value>
 int runHash(
-		UnorderedMap<Key, Value> 							&hash_table,
+		_UnorderedMap_<Key, Value> 							&hash_table,
 		Pair<HashOperation, Pair<Key, Value>> *operation,
 		int 											size_operation,
 		const std::function<void(const std::string&)>	*func_log,
