@@ -16,7 +16,6 @@ namespace Algo {
 
 
 // Class
-// TODO: change name to _UnorderedMap_ or UnorderedMap_Base
 template <class Key, class Value>
 class _UnorderedMap_ {
 // Data

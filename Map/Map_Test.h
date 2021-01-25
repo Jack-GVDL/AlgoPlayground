@@ -19,7 +19,7 @@ namespace Algo {
 
 
 // Enum
-enum HashOperation {
+enum class HashOperation {
 	INSERT,
 	ERASE,
 	CLEAR,
@@ -43,9 +43,9 @@ Pair<HashOperation, Pair<Key, Value>> maskHashOperation(
 
 
 template <class Key, class Value>
-int runHash(
-		_UnorderedMap_<Key, Value> 							&hash_table,
-		Pair<HashOperation, Pair<Key, Value>> *operation,
+int runOperation_Hash(
+		_UnorderedMap_<Key, Value> 						&hash_table,
+		Pair<HashOperation, Pair<Key, Value>> 			*operation,
 		int 											size_operation,
 		const std::function<void(const std::string&)>	*func_log 				= nullptr,
 		const std::function<std::string(const Key)> 	*func_key_to_string 	= nullptr,
@@ -54,7 +54,7 @@ int runHash(
 
 template <class Key, class Value>
 std::string getOperationString(
-		const Pair<HashOperation, Pair<Key, Value>>	&operation,
+		const Pair<HashOperation, Pair<Key, Value>>				&operation,
 		const std::function<std::string(const Key)> 			*func_key_to_string,
 		const std::function<std::string(const Value)>			*func_value_to_string);
 
@@ -77,7 +77,7 @@ Pair<HashOperation, Pair<Key, Value>> makeHashOperation(
 		case HashOperation::AT:
 			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(key, value));
 		case HashOperation::NOT_AT:
-			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(key, 0));
+			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(key, value));
 		default:
 			return Pair<HashOperation, Pair<Key, Value>>(HashOperation::NONE, Pair<Key, Value>(0, 0));
 	}
@@ -85,9 +85,9 @@ Pair<HashOperation, Pair<Key, Value>> makeHashOperation(
 
 
 template <class Key, class Value>
-int runHash(
-		_UnorderedMap_<Key, Value> 							&hash_table,
-		Pair<HashOperation, Pair<Key, Value>> *operation,
+int runOperation_Hash(
+		_UnorderedMap_<Key, Value> 						&hash_table,
+		Pair<HashOperation, Pair<Key, Value>> 			*operation,
 		int 											size_operation,
 		const std::function<void(const std::string&)>	*func_log,
 		const std::function<std::string(const Key)> 	*func_key_to_string,
@@ -106,29 +106,36 @@ int runHash(
 		try {
 
 			switch (operation[i].first) {
-				// insert
-				// [key, value(used to insert)]
 				case HashOperation::INSERT:
+					// insert
+					// [key, value(used to insert)]
 					hash_table.insert(operation[i].second.first, operation[i].second.second);
 					break;
 
-				// erase
-				// [key, ignore]
 				case HashOperation::ERASE:
+					// erase
+					// [key, ignore]
 					hash_table.erase(operation[i].second.first);
 					break;
 
-				// clear
-				// [ignore, ignore]
 				case HashOperation::CLEAR:
+					// clear
+					// [ignore, ignore]
 					hash_table.clear();
 					break;
 
-				// at
-				// [key, value(used to compare with table)]
 				case HashOperation::AT:
+					// at
+					// [key, value(used to compare with table)]
 					temp = hash_table.at(operation[i].second.first);
-					if (temp != operation[i].second.second) throw;
+					if (temp != operation[i].second.second) throw std::runtime_error("");
+					break;
+
+				case HashOperation::NOT_AT:
+					// not at
+					// [key, value(used to compare with table)]
+					temp = hash_table.at(operation[i].second.first);
+					if (temp == operation[i].second.second) throw std::runtime_error("");
 					break;
 
 				default:
@@ -166,32 +173,41 @@ std::string getOperationString(
 
 	// CORE
 	switch (operation.first) {
-		// insert
-		// [key, value (used to insert)]
 		case HashOperation::INSERT:
+			// insert
+			// [key, value (used to insert)]
 			content += "insert: key: ";
 			content += (*func_key_to_string)(operation.second.first);
 			content += ", value: ";
 			content += (*func_value_to_string)(operation.second.second);
 			break;
 
-		// erase
-		// [key, ignore]
 		case HashOperation::ERASE:
+			// erase
+			// [key, ignore]
 			content += "erase: key: ";
 			content += (*func_key_to_string)(operation.second.first);
 			break;
 
-		// clear
-		// [ignore, ignore]
-		case 2:
+		case HashOperation::CLEAR:
+			// clear
+			// [ignore, ignore]
 			content += "clear";
 			break;
 
-		// at
-		// [key, value(used to compare with table)]
-		case 3:
+		case HashOperation::AT:
+			// at
+			// [key, value(used to compare with table)]
 			content += "at: key: ";
+			content += (*func_key_to_string)(operation.second.first);
+			content += ", value (for comparison): ";
+			content += (*func_value_to_string)(operation.second.second);
+			break;
+
+		case HashOperation::NOT_AT:
+			// not at
+			// [key, value(used to compare with table)]
+			content += "not at: key: ";
 			content += (*func_key_to_string)(operation.second.first);
 			content += ", value (for comparison): ";
 			content += (*func_value_to_string)(operation.second.second);
@@ -201,12 +217,13 @@ std::string getOperationString(
 			break;
 	}
 
+	// RET
 	return content;
 }
 
 
 // Namespace: Algo
-};
+}
 
 
 #endif //ALGORITEMIMPLEMENTATION_MAP_TEST_H
