@@ -20,4 +20,4 @@ add_executable(
         List/Vector.h
         List/List_Base.h
         List/List_Test.h
-        List/Linked.h)
+        List/Linked.h Queue/Stack.h Queue/Queue_Base.h Queue/Queue.h Utility/Iterator.h)

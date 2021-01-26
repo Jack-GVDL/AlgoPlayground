@@ -14,9 +14,88 @@
 #include <algorithm>
 
 
+// Namespace-Begin - Algo
+namespace Algo {
+
+
 // Data Structure
 template <class Value>
 class Vector: public _List_<Value> {
+// Class
+public:
+	class Iterator {
+	// Data
+	public:
+		Value 	*container;
+		int		index;
+		int 	forward;
+
+	// Function
+	public:
+		// init and del
+		Iterator(Value *container_, int index_, int forward_ = 1):
+		container(container_),
+		index(index_),
+		forward(forward_)
+		{
+		}
+
+		~Iterator() {
+
+		}
+
+		// operation
+		// ...
+
+	// Operator Overload
+	public:
+		// ++a
+		Iterator &operator++() {
+			index += forward;
+			return *this;
+		}
+
+		// --a
+		Iterator &operator--() {
+			index -= forward;
+			return *this;
+		}
+
+		// a++
+		Iterator operator++(int i) {
+			Iterator temp = *this;
+			index += forward;
+			return temp;
+		}
+
+		// --a
+		Iterator operator--(int i) {
+			Iterator temp = *this;
+			index -= forward;
+			return temp;
+		}
+
+		// a==
+		bool operator==(const Iterator &other) const {
+			return this->index == other.index;
+		}
+
+		// a!=
+		bool operator!=(const Iterator &other) const {
+			return this->index != other.index;
+		}
+
+		// a->
+		Value& operator->() const {
+			return container[index];
+		}
+
+		// *a
+		Value& operator*() const {
+			return container[index];
+		}
+	};
+
 // Data
 public:
     Value			*container;
@@ -44,6 +123,7 @@ public:
     }
 
     // operation
+    // modifier
 	void push_back(Value &value) override {
     	// check if need to expand or not
     	_expand_();
@@ -69,6 +149,7 @@ public:
     	container = new Value[size_container];
 	}
 
+	// data access
 	Value &at(int index) override {
     	if (index < 0 || index >= size_allocated) return default_none;
     	return container[index];
@@ -84,6 +165,7 @@ public:
     	return container[size_allocated - 1];
 	}
 
+	// capacity
 	int size() override {
 		return size_allocated;
 	}
@@ -91,6 +173,23 @@ public:
 	bool empty() override {
 		return size_allocated == 0;
 	}
+
+	// iterator
+	Iterator begin() const {
+		return Iterator(container, 0);
+	}
+
+	Iterator end() const {
+		return Iterator(container, size_allocated);
+	}
+
+	Iterator rbegin() const {
+    	return Iterator(container, size_allocated - 1, -1);
+    }
+
+    Iterator rend() const {
+    	return Iterator(container, -1, -1);
+    }
 
 protected:
 	void _expand_() {
@@ -140,7 +239,11 @@ protected:
 
 
 // Function
-// ...
+//
+
+
+// Namespace-End - Algo
+}
 
 
 #endif //ALGORITEMIMPLEMENTATION_VECTOR_H

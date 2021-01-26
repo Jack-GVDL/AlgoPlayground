@@ -9,7 +9,11 @@
 
 
 // Import
-// ...
+#include "../Utility/Utility.h"
+
+
+// Namespace-Begin - Algo
+namespace Algo {
 
 
 // Data Structure
@@ -43,6 +47,10 @@ public:
 	virtual int size() = 0;
 	virtual bool empty() = 0;
 
+	// iterator
+//	virtual _Iterator_<Value>& begin() = 0;
+//	virtual _Iterator_<Value>& end() = 0;
+
 // Operator Overload
 public:
 	Value& operator[](int index) {
@@ -53,6 +61,10 @@ public:
 
 // Function
 // ...
+
+
+// Namespace-End - Algo
+}
 
 
 #endif //ALGORITEMIMPLEMENTATION_LIST_BASE_H

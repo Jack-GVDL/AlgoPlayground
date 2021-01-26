@@ -12,6 +12,10 @@
 #include "List_Base.h"
 
 
+// Namespace-Begin - Algo
+namespace Algo {
+
+
 // Data Structure
 template <class Value>
 class _ListNode_ {
@@ -48,6 +52,80 @@ public:
 
 template <class Value>
 class Linked: public _List_<Value> {
+// Class
+public:
+	class Iterator {
+	// Data
+	public:
+		_ListNode_<Value>	*cur;
+		Bool				forward;
+
+	// Function
+	public:
+		// init and del
+		Iterator(_ListNode_<Value> *cur_, Bool forward_ = true):
+		cur(cur_),
+		forward(forward_)
+		{
+		}
+
+		~Iterator() {
+
+		}
+
+		// operation
+		// ...
+
+	// Operator Overload
+	public:
+		// ++a
+		Iterator &operator++() {
+			cur = forward ? cur->next : cur->prev;
+			return *this;
+		}
+
+		// --a
+		Iterator &operator--() {
+			cur = forward ? cur->prev : cur->next;
+			return *this;
+		}
+
+		// a++
+		Iterator operator++(int i) {
+			Iterator temp = *this;
+			cur = forward ? cur->next : cur->prev;
+			return temp;
+		}
+
+		// --a
+		Iterator operator--(int i) {
+			Iterator temp = *this;
+			cur = forward ? cur->prev : cur->next;
+			return temp;
+		}
+
+		// a==
+		bool operator==(const Iterator &other) const {
+			return this->cur == other.cur;
+		}
+
+		// a!=
+		bool operator!=(const Iterator &other) const {
+			return this->cur != other.cur;
+		}
+
+		// a->
+		Value& operator->() const {
+			return cur->value;
+		}
+
+		// *a
+		Value& operator*() const {
+			return cur->value;
+		}
+	};
+
+
 // Data
 public:
 	_ListNode_<Value>	_root_;
@@ -155,11 +233,32 @@ public:
 	bool empty() override {
 		return size_allocated == 0;
 	}
+
+	// iterator
+	Iterator begin() const {
+		return Iterator(root->next);
+	}
+
+	Iterator end() const {
+		return Iterator(root);
+	}
+
+	Iterator rbegin() const {
+		return Iterator(root->prev, false);
+	}
+
+	Iterator rend() const {
+		return Iterator(root, false);
+	}
 };
 
 
 // Function
 // ...
+
+
+// Namespace-End - Algo
+}
 
 
 #endif //ALGORITEMIMPLEMENTATION_LINKED_H

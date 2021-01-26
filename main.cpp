@@ -10,12 +10,16 @@ using namespace Algo;
 // Function - Prototype
 bool testHash();
 bool testList();
+bool testList_Vector();  // test the iterator
+bool testList_Linked();  // test the iterator
 
 
 // Operation
 int main() {
 	testHash();
 	testList();
+	testList_Vector();
+	testList_Linked();
     return 0;
 }
 
@@ -133,6 +137,58 @@ bool testList() {
 		if (result == 0) continue;
 		return false;
 	}
+
+	return true;
+}
+
+
+bool testList_Vector() {
+	// create a container
+	Vector<int> vector;
+
+	// push some item into it
+	for (int i = 0; i < 30; ++i) {
+		vector.push_back(i);
+		printf("%i ", vector[i]);
+	}
+	printf("\n");
+
+	// use iterator to get the item one by one
+	for (Vector<int>::Iterator it = vector.begin(); it != vector.end(); ++it) {
+		printf("%i ", *(it));
+	}
+	printf("\n");
+
+	for (Vector<int>::Iterator it = vector.rbegin(); it != vector.rend(); ++it) {
+		printf("%i ", *(it));
+	}
+	printf("\n");
+
+	return true;
+}
+
+
+bool testList_Linked() {
+	// create a container
+	Linked<int> vector;
+
+	// push some item into it
+	for (int i = 0; i < 30; ++i) {
+		vector.push_back(i);
+		printf("%i ", vector[i]);
+	}
+	printf("\n");
+
+	// use iterator to get the item one by one
+	for (Linked<int>::Iterator it = vector.begin(); it != vector.end(); ++it) {
+		printf("%i ", *(it));
+	}
+	printf("\n");
+
+	for (Linked<int>::Iterator it = vector.rbegin(); it != vector.rend(); ++it) {
+		printf("%i ", *(it));
+	}
+	printf("\n");
 
 	return true;
 }
