@@ -39,12 +39,13 @@ public:
     virtual void clear() = 0;
 
     // data access
-    virtual Value& at(int index) = 0;
+    virtual Value& at(unsigned int index) = 0;
     virtual Value& front() = 0;
     virtual Value& back() = 0;
 
     // capacity
-	virtual int size() = 0;
+	virtual unsigned int size() = 0;
+	virtual unsigned int max_size() = 0;
 	virtual bool empty() = 0;
 
 	// iterator
@@ -53,7 +54,7 @@ public:
 
 // Operator Overload
 public:
-	Value& operator[](int index) {
+	Value& operator[](unsigned int index) {
 		return at(index);
 	}
 };

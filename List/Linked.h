@@ -205,7 +205,7 @@ public:
 	}
 
 	// data access
-	Value& at(int index) override {
+	Value& at(unsigned int index) override {
 		if (index < 0 || index >= size_allocated) return default_none;
 
 		auto cur = root->next;
@@ -226,8 +226,13 @@ public:
 	}
 
 	// capacity
-	int size() override {
+	unsigned int size() override {
 		return size_allocated;
+	}
+
+	// TODO
+	unsigned int max_size() override {
+		return 0;
 	}
 
 	bool empty() override {

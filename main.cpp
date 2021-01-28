@@ -143,8 +143,12 @@ bool testList() {
 
 
 bool testList_Vector() {
+	printf("----- Vector -----\n");
+
 	// create a container
 	Vector<int> vector;
+//	vector.resize(20);
+//	vector.reserve(20);
 
 	// push some item into it
 	for (int i = 0; i < 30; ++i) {
@@ -153,22 +157,43 @@ bool testList_Vector() {
 	}
 	printf("\n");
 
+	// stat
+	printf("Size: %i\n", vector.size());
+	printf("Capacity: %i\n", vector.capacity());
+
 	// use iterator to get the item one by one
+	// const iterator: begin
+	for (Vector<int>::ConstIterator it = vector.cbegin(); it < vector.cend(); it = it + 3) {
+		printf("%i ", *(it));
+	}
+	printf("\n");
+
+	// iterator: begin
 	for (Vector<int>::Iterator it = vector.begin(); it != vector.end(); ++it) {
 		printf("%i ", *(it));
 	}
 	printf("\n");
 
+	// const iterator: rbegin
+	for (Vector<int>::ConstIterator it = vector.crbegin(); it != vector.crend(); ++it) {
+		printf("%i ", *(it));
+	}
+	printf("\n");
+
+	// iterator: rbegin
 	for (Vector<int>::Iterator it = vector.rbegin(); it != vector.rend(); ++it) {
 		printf("%i ", *(it));
 	}
 	printf("\n");
 
+	printf("\n");
 	return true;
 }
 
 
 bool testList_Linked() {
+	printf("----- Linked -----\n");
+
 	// create a container
 	Linked<int> vector;
 
@@ -190,5 +215,6 @@ bool testList_Linked() {
 	}
 	printf("\n");
 
+	printf("\n");
 	return true;
 }
