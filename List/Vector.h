@@ -21,9 +21,23 @@ namespace Algo {
 // Data Structure
 template <class Value>
 class Vector: public _List_<Value> {
+// Enum
+protected:
+	enum class ResizeResult {
+		NO_CHANGE,
+		EXPANDED,
+		RETRACTED,
+		SIZE_ENUM
+	};
+
 // Class
 public:
+
+	class Iterator;
+
+//	class ConstIterator: public _ConstIterator_<Value> {
 	class ConstIterator {
+
 	// Data
 	public:
 		Value 	*container;
@@ -40,6 +54,12 @@ public:
 		{
 		}
 
+		ConstIterator(const ConstIterator &it) {
+			this->container = it.container;
+			this->index		= it.index;
+			this->forward	= it.forward;
+		}
+
 		~ConstIterator() {
 
 		}
@@ -51,27 +71,27 @@ public:
 	public:
 		// increment / decrement
 		// ++a
-		ConstIterator &operator++() {
+		ConstIterator& operator++() {
 			index += forward;
 			return *this;
 		}
 
 		// --a
-		ConstIterator &operator--() {
+		ConstIterator& operator--() {
 			index -= forward;
 			return *this;
 		}
 
 		// a++
 		ConstIterator operator++(int i) {
-			Iterator temp = *this;
+			ConstIterator temp(*this);
 			index += forward;
 			return temp;
 		}
 
-		// --a
+		// a--
 		ConstIterator operator--(int i) {
-			Iterator temp = *this;
+			ConstIterator temp(*this);
 			index -= forward;
 			return temp;
 		}
@@ -90,32 +110,32 @@ public:
 		}
 
 		// comparison
-		// a==b
+		// a == b
 		bool operator==(const ConstIterator &other) const {
 			return this->index == other.index;
 		}
 
-		// a!=b
+		// a != b
 		bool operator!=(const ConstIterator &other) const {
 			return this->index != other.index;
 		}
 
-		// a<b
+		// a < b
 		bool operator<(const ConstIterator &other) const {
 			return this->index < other.index;
 		}
 
-		// a>b
+		// a > b
 		bool operator>(const ConstIterator &other) const {
 			return this->index > other.index;
 		}
 
-		// a<=b
+		// a <= b
 		bool operator<=(const ConstIterator &other) const {
 			return this->index <= other.index;
 		}
 
-		// a>=b
+		// a >= b
 		bool operator>=(const ConstIterator &other) const {
 			return this->index >= other.index;
 		}
@@ -133,7 +153,10 @@ public:
 	};
 
 
+	//	class Iterator: public _Iterator_<Value> {
+	// class Iterator: public Vector<Value>::ConstIterator {
 	class Iterator {
+
 	// Data
 	public:
 		Value 	*container;
@@ -149,6 +172,13 @@ public:
 		forward(forward_)
 		{
 		}
+
+		// copy constructor
+		Iterator(const Iterator &it) {
+	    	this->container	= it.container;
+	    	this->index		= it.index;
+	    	this->forward	= it.forward;
+	    }
 
 	    ~Iterator() {
 	    }
@@ -186,45 +216,45 @@ public:
 		}
 
 		// arithmetic
-		// a+b
+		// a + b
 		Iterator operator+(const unsigned int i) {
 			index += i;
 			return *this;
 		}
 
-		// a-b
+		// a - b
 		Iterator operator-(const unsigned int i) {
 			index -= i;
 			return *this;
 		}
 
 		// comparison
-		// a==b
+		// a == b
 		bool operator==(const Iterator &other) const {
 			return this->index == other.index;
 		}
 
-		// a!=b
+		// a != b
 		bool operator!=(const Iterator &other) const {
 			return this->index != other.index;
 		}
 
-		// a<b
+		// a < b
 		bool operator<(const Iterator &other) const {
 			return this->index < other.index;
 		}
 
-		// a>b
+		// a > b
 		bool operator>(const Iterator &other) const {
 			return this->index > other.index;
 		}
 
-		// a<=b
+		// a <= b
 		bool operator<=(const Iterator &other) const {
 			return this->index <= other.index;
 		}
 
-		// a>=b
+		// a >= b
 		bool operator>=(const Iterator &other) const {
 			return this->index >= other.index;
 		}
@@ -235,8 +265,14 @@ public:
 	    	return container[index];
 	    }
 
+	    // *a
 	    Value& operator*() const {
 	    	return container[index];
+	    }
+
+	    // casting
+	    operator ConstIterator() const {
+	    	return ConstIterator(container, index, forward);
 	    }
 	};
 
@@ -294,6 +330,29 @@ public:
     	size_allocated = size_;
     }
 
+    // copy constructor
+    Vector(const Vector& other):
+    ratio_expansion(other.ratio_expansion),
+    ratio_retraction(other.ratio_retraction),
+    size_allocated(other.size_allocated),
+    default_none(other.default_none) {
+    	// copy the container
+    	container = new Value[size_container];
+    	memcpy(container, other.container, other.size_allocated);
+    	this->size_allocated = other.size_allocated;
+    }
+
+	// assignment constructor
+	Vector& operator=(const Vector &other) {
+    	this->container 	 	= other.container;
+    	this->size_container 	= other.size_container;
+    	this->size_allocated 	= other.size_allocated;
+    	this->ratio_retraction	= other.ratio_retraction;
+    	this->ratio_expansion	= other.ratio_expansion;
+
+    	return *this;
+    }
+
     ~Vector() {
     	delete[] container;
     }
@@ -324,6 +383,97 @@ public:
     	size_container = 1 * ratio_expansion;
     	container = new Value[size_container];
 	}
+
+	void assign(unsigned int n, const Value &value) {
+    	_resize_(n, false);
+    	for (unsigned int i = n; i < n; ++i) container[i] = value;
+    }
+
+    void assign(ConstIterator begin, ConstIterator end) {
+    	// get length
+    	ConstIterator 	it 	= begin;
+    	unsigned int	n	= 0;
+    	while (it != end) {
+    		n++;
+    		it++;
+    	}
+
+    	// resize
+    	_resize_(n, false);
+
+    	// memcpy
+    	for (unsigned int i = 0; i < n; ++i) {
+    		container[i] = *begin;
+    		begin++;
+    	}
+    }
+
+//    void assign(Iterator begin, Iterator end) {
+//    	// casting: Iterator -> ConstIterator
+//    	assign( *((ConstIterator*)(&begin)), *((ConstIterator*)(&end)) );
+//    }
+
+    // a new element is inserted before the element at the specified position
+    Iterator insert(Iterator position, const Value &value) {
+    	// CONFIG
+    	const unsigned int	index			= position.index;
+		Value 				*container_old  = nullptr;
+
+    	// expand
+    	ResizeResult ret = _resize_(size_allocated + 1, false, &container_old);
+
+    	// no change
+    	if (ret == ResizeResult::NO_CHANGE) {
+    		for (unsigned int i = size_allocated - 1; i >= index + 1; --i) container[i] = container[i - 1];
+    		container[index] = value;
+    	}
+
+    	// resized
+    	else {
+    		memcpy(container, 				container_old,			sizeof(Value) * index);
+    		memcpy(container + index + 1,	container_old + index,	sizeof(Value) * size_allocated - index);
+    		container[index] = value;
+    		delete container_old;
+    	}
+
+    	// new iterator
+    	return position;
+    }
+
+    Iterator erase(Iterator position) {
+    	// CONFIG
+    	const unsigned int	index			= position.index;
+    	Value				*container_old	= nullptr;
+
+    	// retract
+    	ResizeResult ret = _resize_(size_allocated - 1, false, &container_old);
+
+    	// no change
+    	if (ret == ResizeResult::NO_CHANGE) {
+    		for (unsigned int i = index; i < size_allocated - 2; ++i) container[i] = container[i + 1];
+    	}
+
+    	// resized
+    	else {
+    		memcpy(container,			container_old, 				sizeof(Value) * index);
+    		memcpy(container + index,	container_old + index + 1,	sizeof(Value) * size_allocated - index - 1);
+    		delete container_old;
+    	}
+
+    	return position;
+    }
+
+    void swap(Vector<Value> &other) {
+    	// assignment operator
+    	Vector<Value> temp;
+    	temp = other;
+
+    	// assignment operator
+    	other = *this;
+
+    	// data from other to this
+    	*this = temp;
+    }
 
 	// data access
 	Value &at(unsigned int index) override {
@@ -364,20 +514,15 @@ public:
 	}
 
 	void resize(unsigned int n, Value value) {
-		// no change
-		if (n == size_allocated) return;
+    	// CONFIG
+    	const unsigned int size_allocated_old = size_allocated;
 
-		// retract
-		if (n < size_allocated) {
-			_retract_(n);
-			size_allocated = n;
-			return;
-		}
+    	// CORE
+    	// resize, and the size_allocated will be updated
+    	_resize_(n);
 
-		// expand (n > size_allocated)
-		_expand_(n);
-		for (int i = size_allocated; i < n; ++i) container[i] = value;
-		size_allocated = n;
+    	// fill the unfilled space
+    	for (int i = size_allocated_old; i < n; ++i) container[i] = value;
 	}
 
 	void resize(unsigned int n) {
@@ -424,27 +569,52 @@ public:
 	}
 
 protected:
-	void _expand_(unsigned int size_demand) {
+	// if container is not nullptr
+	// which means the function itself should do nothing to old container and leave upper to handle it
+	ResizeResult _resize_(unsigned int n, Bool is_memcpy = true, Value* *container_old = nullptr) {
+    	// CONFIG
+    	ResizeResult ret;
+
+    	// no change
+    	if (n == size_allocated) return ResizeResult::NO_CHANGE;
+
+    	// retract
+    	if (n < size_allocated) {
+    		ret = _retract_(n, is_memcpy, container_old);
+    		size_allocated = n;
+    		return ret;
+    	}
+
+		// expand (n > size_allocated)
+		ret = _expand_(n, is_memcpy, container_old);
+    	size_allocated = n;
+    	return ret;
+    }
+
+	ResizeResult _expand_(unsigned int size_demand, Bool is_memcpy = true, Value* *container_old = nullptr) {
     	// expand the array if the current size of container is lower than the demand
     	unsigned int size_container_new = size_container;
     	while (size_container_new < size_demand) size_container_new *= ratio_expansion;
 
     	// check if need to actually expand the array
-    	if (size_container_new == size_container) return;
+    	if (size_container_new == size_container) return ResizeResult::NO_CHANGE;
 
     	// allocate new array space and move data to the new container
     	auto container_new = new Value[size_container_new];
-		memcpy(container_new, container, min(size_container_new, size_allocated) * sizeof(Value));
+		if (is_memcpy) memcpy(container_new, container, min(size_container_new, size_allocated) * sizeof(Value));
 
 		// destroy old container
-		delete[] container;
+		if (container_old == nullptr)	delete[] container;
+		else							*container_old = container;
 
 		// put new size_container and container
 		size_container	= size_container_new;
 		container		= container_new;
+
+		return ResizeResult::EXPANDED;
     }
 
-    void _retract_(unsigned int size_demand) {
+    ResizeResult _retract_(unsigned int size_demand, Bool is_memcpy = true, Value* *container_old = nullptr) {
     	// retract the array while the array can hold the size of demand
     	unsigned int size_container_new = size_container;
     	while ((unsigned int)((float)size_container_new * ratio_retraction) > size_demand) {
@@ -452,18 +622,21 @@ protected:
     	}
 
     	// check if need to actually retract the array
-    	if (size_container_new == size_container) return;
+    	if (size_container_new == size_container) return ResizeResult::NO_CHANGE;
 
     	// allocate new array space and move data to the new container
     	auto container_new = new Value[size_container_new];
-		memcpy(container_new, container, min(size_container_new, size_allocated) * sizeof(Value));
+		if (is_memcpy) memcpy(container_new, container, min(size_container_new, size_allocated) * sizeof(Value));
 
 		// destroy old container
-		delete[] container;
+		if (container_old == nullptr)	delete[] container;
+		else							*container_old = container;
 
 		// put new size_container and container
 		size_container	= size_container_new;
 		container		= container_new;
+
+		return ResizeResult::RETRACTED;
     }
 };
 

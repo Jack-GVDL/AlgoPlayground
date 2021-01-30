@@ -147,8 +147,11 @@ bool testList_Vector() {
 
 	// create a container
 	Vector<int> vector;
+	Vector<int> vector_2;
 //	vector.resize(20);
 //	vector.reserve(20);
+
+	vector_2.resize(20, 3);
 
 	// push some item into it
 	for (int i = 0; i < 30; ++i) {
@@ -156,6 +159,11 @@ bool testList_Vector() {
 		printf("%i ", vector[i]);
 	}
 	printf("\n");
+
+	vector.assign(vector_2.begin(), vector_2.end());
+
+	vector.insert(vector.begin() + 5, 100);
+	vector.erase(vector.begin() + 10);
 
 	// stat
 	printf("Size: %i\n", vector.size());
