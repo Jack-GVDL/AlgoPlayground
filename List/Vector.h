@@ -142,8 +142,8 @@ public:
 
 		// member access
 		// a->
-		const Value& operator->() const {
-			return container[index];
+		const Value* operator->() const {
+			return container + index;
 		}
 
 		// *a
@@ -261,8 +261,8 @@ public:
 
 		// member access
 		// a->
-		Value& operator->() const {
-	    	return container[index];
+		Value* operator->() const {
+	    	return container + index;
 	    }
 
 	    // *a
