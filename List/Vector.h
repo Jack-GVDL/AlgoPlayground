@@ -35,29 +35,40 @@ public:
 
 	class Iterator;
 
-//	class ConstIterator: public _ConstIterator_<Value> {
+	// class ConstIterator: public _ConstIterator_<Value> {
 	class ConstIterator {
 
 	// Data
 	public:
-		Value 	*container;
-		int		index;
+		Value	*ptr;
 		int 	forward;
 
 	// Function
 	public:
 		// init and del
-		ConstIterator(Value *container_, int index_, int forward_ = 1):
-		container(container_),
-		index(index_),
+		ConstIterator(Value *container_, int index_, int forward_):
+		ptr(container_ + index_),
 		forward(forward_)
 		{
 		}
 
+		ConstIterator(Value *ptr_, int forward_ = 1):
+		ptr(ptr_),
+		forward(forward_)
+		{
+		}
+
+		// copy constructor
 		ConstIterator(const ConstIterator &it) {
-			this->container = it.container;
-			this->index		= it.index;
+			this->ptr		= it.ptr;
 			this->forward	= it.forward;
+		}
+
+		// assignment constructor / operator
+		ConstIterator& operator=(const ConstIterator &it) {
+			this->ptr		= it.ptr;
+			this->forward	= it.forward;
+			return *this;
 		}
 
 		~ConstIterator() {
@@ -72,83 +83,83 @@ public:
 		// increment / decrement
 		// ++a
 		ConstIterator& operator++() {
-			index += forward;
+			ptr += forward;
 			return *this;
 		}
 
 		// --a
 		ConstIterator& operator--() {
-			index -= forward;
+			ptr -= forward;
 			return *this;
 		}
 
 		// a++
-		ConstIterator operator++(int i) {
+		ConstIterator& operator++(int) {
 			ConstIterator temp(*this);
-			index += forward;
+			ptr += forward;
 			return temp;
 		}
 
 		// a--
-		ConstIterator operator--(int i) {
+		ConstIterator operator--(int) {
 			ConstIterator temp(*this);
-			index -= forward;
+			ptr -= forward;
 			return temp;
 		}
 
 		// arithmetic
 		// a+b
 		ConstIterator operator+(const unsigned int i) {
-			index += i;
+			ptr += i;
 			return *this;
 		}
 
 		// a-b
 		ConstIterator operator-(const unsigned int i) {
-			index -= i;
+			ptr -= i;
 			return *this;
 		}
 
 		// comparison
 		// a == b
 		bool operator==(const ConstIterator &other) const {
-			return this->index == other.index;
+			return this->ptr == other.ptr;
 		}
 
 		// a != b
 		bool operator!=(const ConstIterator &other) const {
-			return this->index != other.index;
+			return this->ptr != other.ptr;
 		}
 
 		// a < b
 		bool operator<(const ConstIterator &other) const {
-			return this->index < other.index;
+			return this->ptr < other.ptr;
 		}
 
 		// a > b
 		bool operator>(const ConstIterator &other) const {
-			return this->index > other.index;
+			return this->ptr > other.ptr;
 		}
 
 		// a <= b
 		bool operator<=(const ConstIterator &other) const {
-			return this->index <= other.index;
+			return this->ptr <= other.ptr;
 		}
 
 		// a >= b
 		bool operator>=(const ConstIterator &other) const {
-			return this->index >= other.index;
+			return this->ptr >= other.ptr;
 		}
 
 		// member access
 		// a->
 		const Value* operator->() const {
-			return container + index;
+			return ptr;
 		}
 
 		// *a
 		const Value& operator*() const {
-			return container[index];
+			return *ptr;
 		}
 	};
 
@@ -159,25 +170,28 @@ public:
 
 	// Data
 	public:
-		Value 	*container;
-		int		index;
+		Value	*ptr;
 		int 	forward;
 
 	// Function
 	public:
 	    // init and del
-		Iterator(Value *container_, int index_, int forward_ = 1):
-		container(container_),
-		index(index_),
+		Iterator(Value *container_, int index_, int forward_):
+		ptr(container_ + index_),
+		forward(forward_)
+		{
+		}
+
+		Iterator(Value *ptr_, int forward_):
+		ptr(ptr_),
 		forward(forward_)
 		{
 		}
 
 		// copy constructor
 		Iterator(const Iterator &it) {
-	    	this->container	= it.container;
-	    	this->index		= it.index;
-	    	this->forward	= it.forward;
+			this->ptr		= it.ptr;
+			this->forward	= it.forward;
 	    }
 
 	    ~Iterator() {
@@ -191,88 +205,88 @@ public:
 		// increment / decrement
 		// ++a
 		Iterator &operator++() {
-			index += forward;
+			ptr += forward;
 			return *this;
 		}
 
 		// --a
 		Iterator &operator--() {
-			index -= forward;
+			ptr -= forward;
 			return *this;
 		}
 
 		// a++
 		Iterator operator++(int i) {
 			Iterator temp = *this;
-			index += forward;
+			ptr += forward;
 			return temp;
 		}
 
 		// --a
 		Iterator operator--(int i) {
 			Iterator temp = *this;
-			index -= forward;
+			ptr -= forward;
 			return temp;
 		}
 
 		// arithmetic
 		// a + b
 		Iterator operator+(const unsigned int i) {
-			index += i;
+			ptr += i;
 			return *this;
 		}
 
 		// a - b
 		Iterator operator-(const unsigned int i) {
-			index -= i;
+			ptr -= i;
 			return *this;
 		}
 
 		// comparison
 		// a == b
 		bool operator==(const Iterator &other) const {
-			return this->index == other.index;
+			return this->ptr == other.ptr;
 		}
 
 		// a != b
 		bool operator!=(const Iterator &other) const {
-			return this->index != other.index;
+			return this->ptr != other.ptr;
 		}
 
 		// a < b
 		bool operator<(const Iterator &other) const {
-			return this->index < other.index;
+			return this->ptr < other.ptr;
 		}
 
 		// a > b
 		bool operator>(const Iterator &other) const {
-			return this->index > other.index;
+			return this->ptr > other.ptr;
 		}
 
 		// a <= b
 		bool operator<=(const Iterator &other) const {
-			return this->index <= other.index;
+			return this->ptr <= other.ptr;
 		}
 
 		// a >= b
 		bool operator>=(const Iterator &other) const {
-			return this->index >= other.index;
+			return this->ptr >= other.ptr;
 		}
 
 		// member access
 		// a->
 		Value* operator->() const {
-	    	return container + index;
+	    	return ptr;
 	    }
 
 	    // *a
 	    Value& operator*() const {
-	    	return container[index];
+	    	return *ptr;
 	    }
 
 	    // casting
 	    operator ConstIterator() const {
-	    	return ConstIterator(container, index, forward);
+	    	return ConstIterator(ptr, forward);
 	    }
 	};
 
@@ -416,7 +430,7 @@ public:
     // a new element is inserted before the element at the specified position
     Iterator insert(Iterator position, const Value &value) {
     	// CONFIG
-    	const unsigned int	index			= position.index;
+    	const unsigned int	index			= (position.ptr - container) / sizeof(Value);
 		Value 				*container_old  = nullptr;
 
     	// expand
@@ -442,7 +456,7 @@ public:
 
     Iterator erase(Iterator position) {
     	// CONFIG
-    	const unsigned int	index			= position.index;
+    	const unsigned int	index			= (position.ptr - container) / sizeof(Value);
     	Value				*container_old	= nullptr;
 
     	// retract
@@ -536,28 +550,28 @@ public:
     }
 
 	// iterator
-	Iterator begin() const {
-		return Iterator(container, 0);
+	Iterator begin() {
+		return Iterator(container, 0, 1);
 	}
 
-	Iterator end() const {
-		return Iterator(container, size_allocated);
+	Iterator end() {
+		return Iterator(container, size_allocated, 1);
 	}
 
-	Iterator rbegin() const {
+	Iterator rbegin() {
     	return Iterator(container, size_allocated - 1, -1);
     }
 
-    Iterator rend() const {
+    Iterator rend() {
     	return Iterator(container, -1, -1);
     }
 
 	ConstIterator cbegin() const {
-		return ConstIterator(container, 0);
+		return ConstIterator(container, 0, 1);
 	}
 
 	ConstIterator cend() const {
-		return ConstIterator(container, size_allocated);
+		return ConstIterator(container, size_allocated, 1);
 	}
 
 	ConstIterator crbegin() const {

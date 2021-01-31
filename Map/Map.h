@@ -12,6 +12,10 @@
 #include "UnorderedMap_Base.h"
 #include "UnorderedMap_Simple.h"
 #include "UnorderedMap_Dynamic.h"
+
+#include "OrderedMap_Base.h"
+#include "OrderedMap_RBTree.h"
+
 #include "Map_Test.h"
 
 

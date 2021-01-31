@@ -19,6 +19,10 @@ namespace Algo {
 // Data Structure
 template <class Value>
 class _List_ {
+// Class
+public:
+	// ...
+
 // Data
 public:
     // ...

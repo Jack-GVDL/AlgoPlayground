@@ -4,6 +4,10 @@ project(AlgoritemImplementation)
 set(CMAKE_CXX_STANDARD 14)
 
 include_directories(Utility)
+include_directories(List)
+include_directories(Map)
+include_directories(Queue)
+include_directories(UnionTree)
 
 add_executable(
         AlgorithmImplementation
@@ -20,4 +24,4 @@ add_executable(
         List/Vector.h
         List/List_Base.h
         List/List_Test.h
-        List/Linked.h Queue/Stack.h Queue/Queue_Base.h Queue/Queue.h Utility/Iterator.h UnionTree/UnionTree.h Utility/Algorithm.h Utility/Debug.h)
+        List/Linked.h Queue/Stack.h Queue/Queue_Base.h Queue/Queue.h Utility/Iterator.h UnionTree/UnionTree.h Utility/Algorithm.h Utility/Debug.h Map/OrderedMap_Base.h Map/OrderedMap_RBTree.h)
