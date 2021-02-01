@@ -27,7 +27,7 @@ public:
 // Function
 public:
     // init and del
-    Stack(_List_ container_ = Vector<Value>()):
+    Stack(_List_<Value> container_ = Vector<Value>()):
     container(container_)
     {
     }

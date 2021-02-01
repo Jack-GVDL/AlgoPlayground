@@ -204,9 +204,9 @@ public:
 		root->prev = root;
 	}
 
-	// data access
+	// data access - non const
 	Value& at(unsigned int index) override {
-		if (index < 0 || index >= size_allocated) return default_none;
+//		if (index < 0 || index >= size_allocated) return default_none;
 
 		auto cur = root->next;
 		while (index != 0) {
@@ -225,17 +225,38 @@ public:
 		return root->prev->value;
 	}
 
+	// data access - const
+	const Value& at(unsigned int index) const override {
+//		if (index < 0 || index >= size_allocated) return default_none;
+
+		auto cur = root->next;
+		while (index != 0) {
+			cur = cur->next;
+			index--;
+		}
+
+		return cur->value;
+	}
+
+	const Value& front() const override {
+		return root->next->value;
+	}
+
+	const Value& back() const override {
+		return root->prev->value;
+	}
+
 	// capacity
-	unsigned int size() override {
+	unsigned int size() const override {
 		return size_allocated;
 	}
 
 	// TODO
-	unsigned int max_size() override {
+	unsigned int max_size() const override {
 		return 0;
 	}
 
-	bool empty() override {
+	bool empty() const override {
 		return size_allocated == 0;
 	}
 

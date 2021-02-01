@@ -9,7 +9,7 @@
 
 
 // Import
-#include "../Utility/Utility.h"
+#include <Utility.h>
 
 
 // Namespace-Begin - Algo
@@ -47,10 +47,14 @@ public:
     virtual Value& front() = 0;
     virtual Value& back() = 0;
 
+    virtual const Value& at(unsigned int index) const = 0;
+    virtual const Value& front() const = 0;
+    virtual const Value& back() const = 0;
+
     // capacity
-	virtual unsigned int size() = 0;
-	virtual unsigned int max_size() = 0;
-	virtual bool empty() = 0;
+	virtual unsigned int size() const = 0;
+	virtual unsigned int max_size() const = 0;
+	virtual bool empty() const = 0;
 
 	// iterator
 //	virtual _Iterator_<Value>& begin() = 0;
@@ -58,6 +62,10 @@ public:
 
 // Operator Overload
 public:
+	const Value& operator[](unsigned int index) const {
+		return at(index);
+	}
+
 	Value& operator[](unsigned int index) {
 		return at(index);
 	}

@@ -12,6 +12,7 @@
 #include "List_Base.h"
 #include "Linked.h"
 #include "Vector.h"
+#include "String.h"
 #include "List_Test.h"
 
 

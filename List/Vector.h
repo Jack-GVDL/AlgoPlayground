@@ -40,19 +40,19 @@ public:
 
 	// Data
 	public:
-		Value	*ptr;
-		int 	forward;
+		const Value	*ptr;
+		int 		forward;
 
 	// Function
 	public:
 		// init and del
-		ConstIterator(Value *container_, int index_, int forward_):
+		ConstIterator(const Value *container_, int index_, int forward_):
 		ptr(container_ + index_),
 		forward(forward_)
 		{
 		}
 
-		ConstIterator(Value *ptr_, int forward_ = 1):
+		ConstIterator(const Value *ptr_, int forward_ = 1):
 		ptr(ptr_),
 		forward(forward_)
 		{
@@ -94,7 +94,7 @@ public:
 		}
 
 		// a++
-		ConstIterator& operator++(int) {
+		ConstIterator operator++(int) {
 			ConstIterator temp(*this);
 			ptr += forward;
 			return temp;
@@ -489,41 +489,61 @@ public:
     	*this = temp;
     }
 
-	// data access
-	Value &at(unsigned int index) override {
-    	if (index < 0 || index >= size_allocated) return default_none;
+	// data access - const
+	const Value &at(unsigned int index) const override {
+//    	if (index < 0 || index >= size_allocated) return default_none;
     	return container[index];
 	}
 
-	Value &front() override {
-    	if (size_allocated == 0) return default_none;
+	const Value &front() const override {
+//    	if (size_allocated == 0) return default_none;
     	return container[0];
 	}
 
-	Value &back() override {
+	const Value &back() const override {
     	if (size_allocated == 0) return default_none;
     	return container[size_allocated - 1];
 	}
 
-	Value* data() {
+	const Value* data() const {
     	return container;
     }
 
+    // data access - non const
+	Value &at(unsigned int index) override {
+//    	if (index < 0 || index >= size_allocated) return default_none;
+		return container[index];
+	}
+
+	Value &front() override {
+//    	if (size_allocated == 0) return default_none;
+		return container[0];
+	}
+
+	Value &back() override {
+		if (size_allocated == 0) return default_none;
+		return container[size_allocated - 1];
+	}
+
+	Value* data() {
+		return container;
+	}
+
 	// capacity
-	unsigned int size() override {
+	unsigned int size() const override {
 		return size_allocated;
 	}
 
 	// TODO
-	unsigned int max_size() override {
+	unsigned int max_size() const override {
     	return 0;
     }
 
-    unsigned int capacity() {
+    unsigned int capacity() const {
     	return size_container;
     }
 
-	bool empty() override {
+	bool empty() const override {
 		return size_allocated == 0;
 	}
 
