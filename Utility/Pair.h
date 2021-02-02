@@ -17,7 +17,7 @@ namespace Algo {
 
 
 // Data Structure
-template<class First, class Second>
+template <class First, class Second>
 class Pair {
 
 // Data
@@ -48,12 +48,15 @@ public:
 };
 
 
-// Namespace - Algo
+// Function
+template <class First, class Second>
+static inline Pair<First, Second> makePair(First first, Second second) {
+	return Pair<First, Second>(first, second);
 }
 
 
-// Function
-// ...
+// Namespace - Algo
+}
 
 
 #endif //ALGORITEMIMPLEMENTATION_PAIR_H

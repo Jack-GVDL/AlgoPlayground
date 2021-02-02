@@ -14,6 +14,7 @@
 //#include "Iterator.h"
 #include "Algorithm.h"
 #include "Debug.h"
+#include "StdInt.h"
 
 
 // Data Structure

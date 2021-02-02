@@ -41,7 +41,6 @@ public:
     virtual void insert(const Key &key, const Value &value) = 0;
     virtual void erase(const Key &key) = 0;
     virtual void clear() = 0;
-    virtual void swap(_OrderedMap_& other) = 0;
 
     // element access
     virtual Value& at(const Key &key) = 0;

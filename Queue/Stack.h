@@ -32,6 +32,12 @@ public:
     {
     }
 
+    // assignment operator
+    Stack& operator=(const Stack& other) {
+    	this->container = other.container;
+    	return *this;
+    }
+
     ~Stack() {
 
     }
