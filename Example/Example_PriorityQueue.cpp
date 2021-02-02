@@ -11,6 +11,7 @@
 #include <vector>
 #include <queue>
 #include <stdio.h>
+#include <stdint.h>
 
 
 // Namespace
