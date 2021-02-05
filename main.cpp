@@ -12,14 +12,16 @@ bool testHash();
 bool testList();
 bool testList_Vector();  // test the iterator
 bool testList_Linked();  // test the iterator
+bool testMap_RBTree();
 
 
 // Operation
 int main() {
-	testHash();
-	testList();
-	testList_Vector();
-	testList_Linked();
+//	testHash();
+//	testList();
+//	testList_Vector();
+//	testList_Linked();
+	testMap_RBTree();
     return 0;
 }
 
@@ -224,5 +226,21 @@ bool testList_Linked() {
 	printf("\n");
 
 	printf("\n");
+	return true;
+}
+
+
+bool testMap_RBTree() {
+	OrderedMap_RBTree<int, int> table;
+	table.insert(10, 10);
+	table.insert(11, 11);
+	table.insert(13, 13);
+
+
+	std::function<std::string(const int)>	func_key_to_string		= [](const int key) 				-> std::string 	{ return std::to_string(key); };
+	std::function<std::string(const int)>	func_value_to_string	= [](const int value) 				-> std::string 	{ return std::to_string(value); };
+
+	printf("%s \n", getString_RBTree(table.root->left, &func_key_to_string, &func_value_to_string).c_str());
+
 	return true;
 }

@@ -32,7 +32,7 @@ namespace Algo {
 // Data Structure
 struct Bool {
 // Data
-protected:
+public:
 	char _value;
 
 // Function
@@ -40,6 +40,10 @@ public:
 	// init and del
 	Bool(bool value) {
 		*this = value;
+	}
+
+	Bool(unsigned int i) {
+		*this = (i != 0);
 	}
 
 	template <class T>
@@ -56,6 +60,12 @@ public:
 
 	Bool& operator= (Bool other) {
 		_value = other._value;
+		return *this;
+	}
+
+	template <class T>
+	Bool& operator= (T other) {
+		_value = other != 0 ? 1 : 0;
 		return *this;
 	}
 
@@ -76,7 +86,7 @@ public:
 	}
 
 	bool operator! () const {
-		return _value != 0;
+		return _value == 0;
 	}
 
 	template <class T>

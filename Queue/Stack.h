@@ -18,17 +18,16 @@ namespace Algo {
 
 
 // Data Structure
-template <class Value>
+template <class Value, class Allocator = Vector<Value>>
 class Stack: public _Queue_<Value> {
 // Data
 public:
-    _List_<Value> container;
+    Allocator container;
 
 // Function
 public:
     // init and del
-    Stack(_List_<Value> container_ = Vector<Value>()):
-    container(container_)
+    Stack()
     {
     }
 

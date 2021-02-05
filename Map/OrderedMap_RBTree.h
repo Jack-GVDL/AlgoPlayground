@@ -11,10 +11,19 @@
 // Import
 #include "OrderedMap_Base.h"
 #include <Queue.h>
+#include <string.h>
 
 
 // Namespace-Begin - Algo
 namespace Algo {
+
+
+// Enum
+enum class RBNodeColor {
+	RED = 0,
+	BLACK = 1,
+	SIZE_ENUM
+};
 
 
 // Data Structure
@@ -103,10 +112,16 @@ public:
 	// Function
 	public:
 	    // init and del
-	    ConstIterator(Stack<Pair<Bool, const RBNode*>> &stack_, Bool is_left_first_ = true):
+	    ConstIterator(Stack<Pair<uint8, const RBNode*>> &stack_, Bool is_left_first_ = true):
 	    is_left_first(is_left_first)
 	    {
 	    	this->stack = stack;
+	    }
+
+	    ConstIterator(const ConstIterator &other)
+	    {
+	    	this->stack 		= Stack<Pair<Bool, const RBNode*>>(other.stack);
+	    	this->is_left_first = other.is_left_first;
 	    }
 
 	    ~ConstIterator() {
@@ -118,7 +133,89 @@ public:
 
 	// Operator Overload
 	public:
+		// increment / decrement
+		// ++a
+		ConstIterator& operator++() {
+	    	// if user constantly check "it != map.end()"
+	    	// this statement is not needed
+	    	if (stack.empty()) return *this;
+
+	    	// check if current is visited or not
+	    	// if visited, then go upward
+	    	if (stack.top().first == 1) {
+	    		while (!stack.empty() && stack.top().first == 1) stack.pop();
+	    		return *this;
+	    	}
+
+	    	// update node state
+	    	stack.top().first = 1;
+
+	    	// current node is visited, need to find the next available node
+	    	// check if can go deep into right / left
+	    	// if not, then recursively go upward
+	    	if (is_left_first && stack.top().second->right == nullptr){
+	    		while (!stack.empty() && stack.top().first == 1) stack.pop();
+	    		return *this;
+	    	}
+
+	    	if (!is_left_first && stack.top().second->left == nullptr) {
+				while (!stack.empty() && stack.top().first == 1) stack.pop();
+	    		return *this;
+	    	}
+
+	    	// go deep
+	    	RBNode *cur = stack.top().second;
+	    	if (is_left_first) {
+	    		cur = cur->right;
+	    		while (cur != nullptr) {
+	    			stack.push(makePair(0, cur));
+	    			cur = cur->left;
+	    		}
+
+	    	} else {
+	    		cur = cur->left;
+	    		while (cur != nullptr) {
+	    			stack.push(makePair(0, cur));
+	    			cur = cur->right;
+	    		}
+
+	    	}
+
+	    	return *this;
+		}
+
+		// a++
+		ConstIterator operator++(int) {
+	    	ConstIterator temp(*this);
+	    	++(*this);
+	    	return temp;
+		}
+
+		// arithmetic
 		// ...
+
+		// comparison
+		// a == b
+		bool operator==(const ConstIterator &other) const {
+	    	if (this->stack.empty() && other.stack.empty()) 			return true;
+	    	if (this->stack.top().second == other.stack.top().second) 	return true;
+	    	return false;
+		}
+
+		// a != b
+		// bool operator!=(const ConstIterator &other) const {
+		// }
+
+		// member access
+		// a->
+		const Value* operator->() const {
+			return &(stack.top().second->value);
+		}
+
+		// *a
+		const Value& operator*() const {
+			return stack.top().second->value;
+		}
 	};
 
 	class Iterator {
@@ -126,7 +223,7 @@ public:
 	public:
 		// for the first item in pair is "is_self_visited"
 		// it is: is_left_visited
-		Stack<Pair<Bool, RBNode*>> 	stack;
+		Stack<Pair<uint8, RBNode*>> 	stack;
 		Bool						is_left_first;
 
 	// Function
@@ -203,9 +300,9 @@ public:
 
     	// insert
     	_insert_(target, key, value);
-    	size_allocated++;
 	}
 
+	// TODO
 	void erase(const Key &key) override {
 
 	}
@@ -214,7 +311,7 @@ public:
     	_clear_();
 	}
 
-	void swap(OrderedMap_RBTree &other) override {
+	void swap(OrderedMap_RBTree &other) {
     	// temp
     	OrderedMap_RBTree temp;
     	temp = other;
@@ -243,7 +340,6 @@ public:
 
     	// insert
     	target = _insert_(target, key, default_none);
-    	size_allocated++;
 
     	return target->value;
 	}
@@ -270,7 +366,7 @@ public:
 
     	// continuously stepping left to get the leftmost node
     	while (left != nullptr) {
-    		stack.push(makePair(false, left));
+    		stack.push(makePair(0, left));
     		left = left->left;
     	}
     	return Iterator(stack);
@@ -288,7 +384,7 @@ public:
 
 		// continuously stepping right to get the rightmost node
 		while (right != nullptr) {
-			stack.push(makePair(false, right));
+			stack.push(makePair(0, right));
 			right = right->right;
 		}
 		return Iterator(stack, false);
@@ -306,7 +402,7 @@ public:
 
 		// continuously stepping left to get the leftmost node
 		while (left != nullptr) {
-			stack.push(makePair(false, left));
+			stack.push(makePair(0, left));
 			left = left->left;
 		}
 		return ConstIterator(stack);
@@ -325,7 +421,7 @@ public:
 
 		// continuously stepping right to get the rightmost node
 		while (right != nullptr) {
-			stack.push(makePair(false, right));
+			stack.push(makePair(0, right));
 			right = right->right;
 		}
 		return ConstIterator(stack, false);
@@ -337,7 +433,7 @@ public:
     }
 
 protected:
-	RBNode* _find_(Key &key) {
+	RBNode* _find_(const Key &key) {
     	RBNode *cur	= root->left;
     	RBNode *prev	= root;
 
@@ -364,7 +460,7 @@ protected:
     	return prev;
     }
 
-	RBNode* _insertFirst_(Key &key, Value &value) {
+	RBNode* _insertFirst_(const Key &key, const Value &value) {
     	// create
     	auto node_new = new RBNode(key, value);
     	node_new->is_black	= true;  // top is black
@@ -377,22 +473,65 @@ protected:
 
     	// stat
     	size_allocated++;
+
+    	return node_new;
 	}
 
-    RBNode* _insert_(RBNode *node, Key &key, Value &value) {
+    RBNode* _insert_(RBNode *node, const Key &key, const Value &value) {
     	// find the point of insertion
     	// and the new node is initially painted to be RED
     	auto node_new = new RBNode();
-    	node_new->is_black = false;
 
-    	if (key < node->key)	node->left  = node_new;
-    	if (key > node->key)	node->right = node_new;
+    	node_new->is_black	= (uint8)RBNodeColor::RED;
+    	node_new->key		= key;
+    	node_new->value		= value;
+
+    	if (key < node->key) node->left  = node_new;
+    	if (key > node->key) node->right = node_new;
+    	node_new->parent = node;
 
     	// fix-up
-    	_fixUp_(node_new);
+		_fixInsertion_(node_new);
+
+		// stat
+		size_allocated++;
+
+		return node_new;
     }
 
-    void _fixUp_(RBNode *node) {
+    void _erase_(RBNode *node) {
+    	// assumed: node must exist
+
+    	// check if node has 2 children
+    	// if so, then need to convert this to the situation of node only has 1 child
+    	//
+    	// convert find the leftmost / rightmost node (node_bottom) on the right / left child, and
+    	// do swapping (value only) on node and node_bottom
+    	// finally change the node to be node_bottom
+    	if (node->left != nullptr && node->right != nullptr) {
+    		auto node_bottom = _getLeftmost_(node->right);
+
+    		Key 	temp_key 	= node_bottom->key;
+    		Value	temp_value	= node_bottom->value;
+
+    		node_bottom->key 	= node->key;
+    		node_bottom->value	= node->value;
+
+    		node->key	= temp_key;
+    		node->value = temp_value;
+
+    		node = node_bottom;
+    	}
+
+    	// fix-deletion
+    	_fixDeletion_(node);
+
+    	// destroy
+    	delete node;
+    }
+
+    // for insertion, only 2 rotation at max is needed
+    void _fixInsertion_(RBNode *node) {
     	// condition 1 / base condition
     	// current node is top
     	if (node->parent == root) {
@@ -413,11 +552,11 @@ protected:
     	RBNode *grandparent	= _getGrandparent_(node);
 
     	if (uncle != nullptr && !uncle->is_black) {
-    		node->parent->is_black 	= true;
-    		uncle->is_black 		= true;
-    		grandparent->is_black	= false;  // grandparent now is red
+    		node->parent->is_black 	= (uint8)RBNodeColor::BLACK;
+    		uncle->is_black 		= (uint8)RBNodeColor::BLACK;
+    		grandparent->is_black	= (uint8)RBNodeColor::RED;
 
-    		_fixUp_(grandparent);
+			_fixInsertion_(grandparent);
     		return;
     	}
 
@@ -437,18 +576,97 @@ protected:
     	}
 
     	// sub-condition
-    	//
-    	// it is noticed that grandparent is changed after rotation
-    	// and at this point, grandparent is either to be root or to be RED
     	if (node->parent->left == node && grandparent->left == node->parent) {
     		_rotateRight_(node->parent, grandparent);
-    		grandparent = _getGrandparent_(node);
     	} else {
     		_rotateLeft_(node->parent, grandparent);
-    		grandparent = _getGrandparent_(node);
+    	}
+    }
+
+    void _fixDeletion_(RBNode *node) {
+    	RBNode *node_child = node->left == nullptr ? node->right : node->left;
+
+    	// ----- preprocessing -----
+    	// replace node
+		if (node->parent->left == node) node->parent->right	= node_child;
+		else							node->parent->left	= node_child;
+
+		// if there is no child for node
+		// else set node_child->parent
+    	if (node_child == nullptr) return;
+    	node_child->parent = node->parent;
+
+    	// if self is RED
+    	if (!node->is_black) return;
+
+    	// if self is BLACK and child is RED
+    	if (!node_child->is_black) {
+    		node_child->is_black = true;
+    		return;
     	}
 
-    	_fixUp_(grandparent);
+    	// reset node
+    	node = node_child;
+
+    	// ----- situation 1 -----
+    	// check if node now is at the top
+    	if (node->parent == root) return;
+
+    	// ----- situation 2 -----
+    	// rotation on sibling and parent
+    	// after rotation, node->parent is changed to be sibling
+    	RBNode *node_sibling = _getSibling_(node);
+    	if (!node_sibling->is_black) {
+    		if (node->parent->left == node) _rotateLeft_(node_sibling, node->parent);
+    		else							_rotateRight_(node_sibling, node->parent);
+    	}
+
+    	// as sibling for node is changed, then need to refresh the variable again
+    	node_sibling = _getSibling_(node);
+
+    	// ----- situation 3 -----
+    	// situation 2 and situation 3 cannot be co-exist
+    	if (node->parent->is_black &&
+    		node_sibling->is_black &&
+    		node_sibling->left->is_black &&
+    		node_sibling->right->is_black) {
+
+    		node_sibling->is_black = false;
+    		_fixDeletion_(node->parent);
+    		return;
+    	}
+
+    	// ----- situation 4 -----
+    	if (!node->parent->is_black &&
+    		node_sibling->is_black &&
+    		node_sibling->left->is_black &&
+    		node_sibling->right->is_black) {
+
+    		node_sibling->is_black = false;
+    		node->parent->is_black = true;
+    		return;
+    	}
+
+    	// ----- situation 5 -----
+    	if (node->parent->left == node &&
+    		node_sibling->right->is_black == (uint8)RBNodeColor::BLACK &&
+    		node_sibling->left->is_black  == (uint8)RBNodeColor::RED) {
+
+    		_rotateRight_(node_sibling->left, node_sibling);
+    	}
+    	else if (node->parent->right == node &&
+    			 node_sibling->left->is_black  == (uint8)RBNodeColor::BLACK &&
+    			 node_sibling->right->is_black == (uint8)RBNodeColor::RED) {
+
+    		_rotateLeft_(node_sibling->right, node_sibling);
+    	}
+
+    	// update sibling node
+    	// node_sibling = _getSibling_(node);
+
+    	// ----- situation 6 -----
+    	if (node->parent->left == node) _rotateLeft_(node->parent, node->parent->parent);
+    	else							_rotateRight_(node->parent, node->parent->parent);
     }
 
     void _clear_() {
@@ -557,13 +775,30 @@ protected:
 	}
 
 	// get node
-	RBNode* _getGrandparent_(RBNode *node) {
+	RBNode* _getGrandparent_(RBNode *node) const {
     	return node->parent->parent;
     }
 
-    RBNode* _getUncle_(RBNode *node) {
+    RBNode* _getUncle_(RBNode *node) const {
     	if (node->parent == _getGrandparent_(node)->left) 	return _getGrandparent_(node)->right;
     	else											 	return _getGrandparent_(node)->left;
+    }
+
+    RBNode* _getSibling_(RBNode *node ) const {
+    	if (node->parent->left == node) return node->parent->right;
+    	else							return node->parent->left;
+    }
+
+    RBNode* _getLeftmost_(const RBNode *node) const {
+    	if (node == nullptr) return node;
+    	while (node->left != nullptr) node = node->left;
+    	return node;
+    }
+
+    RBNode* _getRightmost_(const RBNode *node) const {
+    	if (node == nullptr) return node;
+    	while (node->right != nullptr) node = node->right;
+    	return node;
     }
 
 // Operator Overload
@@ -573,7 +808,42 @@ public:
 
 
 // Function
-// ...
+// traversal: LCR
+template <class Key, class Value>
+std::string getString_RBTree(
+		_RBNode_<Key, Value> *node,
+		const std::function<std::string(Key)>	*func_key_to_string,
+		const std::function<std::string(Value)>	*func_value_to_string,
+		unsigned int depth = 0,
+		unsigned int indent = 4) {
+
+	std::string content;
+	if (node == nullptr) {
+		content.append(indent * depth, ' ');
+		content.append("NULL\n");
+		return content;
+	}
+
+	// left
+	content += getString_RBTree(node->left, func_key_to_string, func_value_to_string, depth + 1, indent);
+
+	// center
+	content.append(indent * depth, ' ');
+	content += '(';
+	content += (*func_key_to_string)(node->key);
+	content += ',';
+	content += (*func_value_to_string)(node->value);;
+	content += ',';
+	content += node->is_black ? "B" : "R";
+	content += ')';
+	content += '\n';
+
+	// right
+	content += getString_RBTree(node->right, func_key_to_string, func_value_to_string, depth + 1, indent);
+
+	// ret
+	return content;
+}
 
 
 // Namespace-End - Algo
