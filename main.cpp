@@ -231,16 +231,27 @@ bool testList_Linked() {
 
 
 bool testMap_RBTree() {
+	// CONFIG
 	OrderedMap_RBTree<int, int> table;
-	table.insert(10, 10);
-	table.insert(11, 11);
-	table.insert(13, 13);
 
+	std::function<std::string(const int)>	func_key_to_string		= [](const int key)		-> std::string 	{ return std::to_string(key); };
+	std::function<std::string(const int)>	func_value_to_string	= [](const int value) 	-> std::string 	{ return std::to_string(value); };
 
-	std::function<std::string(const int)>	func_key_to_string		= [](const int key) 				-> std::string 	{ return std::to_string(key); };
-	std::function<std::string(const int)>	func_value_to_string	= [](const int value) 				-> std::string 	{ return std::to_string(value); };
+	// insert
+	for (int i = 0; i < 15; ++i) table.insert(i, i);
 
-	printf("%s \n", getString_RBTree(table.root->left, &func_key_to_string, &func_value_to_string).c_str());
+	printf("Insertion completed\n");
+	if (!checkRBTree_IsBalance(table.root->left, table.root)) printf("Imbalance\n");
+	printf("%s \n", getString_RBTree(table.root->left, table.root, &func_key_to_string, &func_value_to_string).c_str());
+
+	// erase
+	table.erase(18);
+	table.erase(14);
+	table.erase(9);
+
+	printf("Deletion completed\n");
+	if (!checkRBTree_IsBalance(table.root->left, table.root)) printf("Imbalance\n");
+	printf("%s \n", getString_RBTree(table.root->left, table.root, &func_key_to_string, &func_value_to_string).c_str());
 
 	return true;
 }
