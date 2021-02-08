@@ -38,6 +38,10 @@ public:
 // Function
 public:
 	// init and del
+	Bool() {
+		_value = 1;
+	}
+
 	Bool(bool value) {
 		*this = value;
 	}
@@ -47,18 +51,18 @@ public:
 	}
 
 	template <class T>
-	Bool(T other) {
+	Bool(const T &other) {
 		*this = other;
 	}
 
 // Operator Overload
 public:
-	Bool& operator= (bool other) {
+	Bool& operator= (const bool &other) {
 		_value = other ? 1 : 0;
 		return *this;
 	}
 
-	Bool& operator= (Bool other) {
+	Bool& operator= (const Bool &other) {
 		_value = other._value;
 		return *this;
 	}

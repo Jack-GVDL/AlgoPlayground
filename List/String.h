@@ -34,7 +34,7 @@ public:
 
     // operation
     // modifier
-	void push_back(char &value) override {
+	void push_back(const char &value) override {
     	container.push_back(value);
 	}
 

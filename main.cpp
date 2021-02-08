@@ -253,5 +253,22 @@ bool testMap_RBTree() {
 	if (!checkRBTree_IsBalance(table.root->left, table.root)) printf("Imbalance\n");
 	printf("%s \n", getString_RBTree(table.root->left, table.root, &func_key_to_string, &func_value_to_string).c_str());
 
+	// iterator
+	printf("cbegin\n");
+	for (auto it = table.cbegin(); it != table.cend(); ++it) printf("%i ", *it);
+	printf("\n");
+
+	printf("cend\n");
+	for (auto it = table.crbegin(); it != table.crend(); ++it) printf("%i ", *it);
+	printf("\n");
+
+//	printf("begin\n");
+//	for (auto it = table.begin(); it != table.end(); ++it) printf("%i ", *it);
+//	printf("\n");
+
+//	printf("end\n");
+//	for (auto it = table.rbegin(); it != table.rend(); ++it) printf("%i ", *it);
+//	printf("\n");
+
 	return true;
 }

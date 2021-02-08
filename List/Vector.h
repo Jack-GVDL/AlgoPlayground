@@ -373,7 +373,7 @@ public:
 
     // operation
     // modifier
-	void push_back(Value &value) override {
+	void push_back(const Value &value) override {
     	// check if need to expand or not
     	_expand_(size_allocated + 1);
 

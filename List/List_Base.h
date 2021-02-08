@@ -38,7 +38,7 @@ public:
 
     // operation
     // modifier
-	virtual void push_back(Value &value) = 0;
+	virtual void push_back(const Value &value) = 0;
     virtual void pop_back() = 0;
     virtual void clear() = 0;
 

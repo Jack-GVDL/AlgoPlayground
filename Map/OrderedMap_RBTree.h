@@ -109,24 +109,35 @@ public:
 	public:
 		// for the first item in pair is "is_self_visited"
 		RBNode 								*root;
-	    Stack<Pair<Bool, const RBNode*>> 	stack;
-		Bool 								is_left_first;
+	    Stack<Pair<uint8, const RBNode*>> 	stack;
+
+		intptr_t	forward_offset;
+		intptr_t	backward_offset;
 
 	// Function
 	public:
 	    // init and del
+	    ConstIterator(Bool is_left_first_ = true):
+	    root(nullptr)
+	    {
+	    	forward_offset	= is_left_first_  ? getOffset(RBNode, left) : getOffset(RBNode, right);
+			backward_offset	= !is_left_first_ ? getOffset(RBNode, left) : getOffset(RBNode, right);
+	    }
+
 	    ConstIterator(Stack<Pair<uint8, const RBNode*>> &stack_, RBNode *root_, Bool is_left_first_ = true):
-	    is_left_first(is_left_first_),
 	    root(root_)
 	    {
-	    	this->stack = stack;
+			forward_offset	= is_left_first_  ? getOffset(RBNode, left) : getOffset(RBNode, right);
+			backward_offset	= !is_left_first_ ? getOffset(RBNode, left) : getOffset(RBNode, right);
+	    	this->stack = stack_;
 	    }
 
 	    ConstIterator(const ConstIterator &other)
 	    {
 	    	this->root			= other.root;
-	    	this->stack 		= Stack<Pair<Bool, const RBNode*>>(other.stack);
-	    	this->is_left_first = other.is_left_first;
+	    	this->stack 		= Stack<Pair<uint8, const RBNode*>>(other.stack);
+			forward_offset		= other.forward_offset;
+			backward_offset		= other.backward_offset;
 	    }
 
 	    ~ConstIterator() {
@@ -144,49 +155,33 @@ public:
 	    	// this statement is not needed
 	    	if (stack.empty()) return *this;
 
-	    	// check if current is visited or not
-	    	// if visited, then go upward
-	    	if (stack.top().first == 1) {
-	    		while (!stack.empty() && stack.top().first == 1) stack.pop();
-	    		return *this;
-	    	}
-
 	    	// update node state
 	    	stack.top().first = 1;
 
 	    	// current node is visited, need to find the next available node
 	    	// check if can go deep into right / left
 	    	// if not, then recursively go upward
-	    	if (is_left_first && stack.top().second->right == root){
-	    		while (!stack.empty() && stack.top().first == 1) stack.pop();
-	    		return *this;
-	    	}
-
-	    	if (!is_left_first && stack.top().second->left == root) {
+	    	if (*getTargetPtr(stack.top().second, RBNode*, forward_offset) == root) {
 				while (!stack.empty() && stack.top().first == 1) stack.pop();
-	    		return *this;
+				return *this;
 	    	}
 
 	    	// go deep
-	    	RBNode *cur = stack.top().second;
-	    	if (is_left_first) {
-	    		cur = cur->right;
-	    		while (cur != root) {
-	    			stack.push(makePair(0, cur));
-	    			cur = cur->left;
-	    		}
-
-	    	} else {
-	    		cur = cur->left;
-	    		while (cur != root) {
-	    			stack.push(makePair(0, cur));
-	    			cur = cur->right;
-	    		}
-
+	    	const RBNode *cur = stack.top().second;
+	    	cur = *getTargetPtr(cur, RBNode*, backward_offset);
+	    	while (cur != root) {
+	    		stack.push(Pair<uint8, const RBNode*>(0, cur));
+	    		cur = *getTargetPtr(cur, RBNode*, forward_offset);
 	    	}
 
 	    	return *this;
 		}
+
+		// TODO
+		// --a
+		ConstIterator operator--() {
+
+	    }
 
 		// a++
 		ConstIterator operator++(int) {
@@ -194,6 +189,13 @@ public:
 	    	++(*this);
 	    	return temp;
 		}
+
+		// a--
+		ConstIterator operator--(int) {
+	    	ConstIterator temp(*this);
+	    	--(*this);
+	    	return temp;
+	    }
 
 		// arithmetic
 		// ...
@@ -207,17 +209,18 @@ public:
 		}
 
 		// a != b
-		// bool operator!=(const ConstIterator &other) const {
-		// }
+		 bool operator!=(const ConstIterator &other) const {
+	    	return !(*this == other);
+	    }
 
 		// member access
 		// a->
-		const Value* operator->() const {
+		const Value* operator->() {
 			return &(stack.top().second->value);
 		}
 
 		// *a
-		const Value& operator*() const {
+		const Value& operator*() {
 			return stack.top().second->value;
 		}
 	};
@@ -227,13 +230,18 @@ public:
 	public:
 		// for the first item in pair is "is_self_visited"
 		RBNode 						*root;
-		Stack<Pair<Bool, RBNode*>> 	stack;
+		Stack<Pair<uint8, RBNode*>> stack;
 		Bool 						is_left_first;
 
 	// Function
 	public:
 	    // init and del
-		Iterator(Stack<Pair<Bool, RBNode*>> &stack_, RBNode *root_, Bool is_left_first_ = true):
+	    Iterator(Bool is_left_first_ = true):
+	    root(nullptr),
+	    is_left_first(is_left_first_)
+	    {}
+
+		Iterator(Stack<Pair<uint8, RBNode*>> &stack_, RBNode *root_, Bool is_left_first_ = true):
 		root(root_),
 		is_left_first(is_left_first_)
 		{
@@ -376,12 +384,12 @@ public:
 	// operation
 	Iterator begin() {
     	// CONFIG
-    	Stack<Pair<Bool, RBNode*>> 	stack;
+    	Stack<Pair<uint8, RBNode*>>	stack;
     	RBNode 						*left = root->left;
 
     	// continuously stepping left to get the leftmost node
     	while (left != root) {
-    		stack.push(makePair(0, left));
+    		stack.push(makePair<uint8, RBNode*>(0, left));
     		left = left->left;
     	}
     	return Iterator(stack, root);
@@ -389,17 +397,17 @@ public:
 
 	Iterator end() {
     	// the item after final one is nullptr
-    	return Iterator(Stack<Pair<Bool, RBNode*>>(), root);
+    	return Iterator(Stack<Pair<uint8, RBNode*>>(), root);
     }
 
 	Iterator rbegin() {
 		// CONFIG
-		Stack<Pair<Bool, RBNode*>> 	stack;
+		Stack<Pair<uint8, RBNode*>> stack;
 		RBNode 						*right = root->right;
 
 		// continuously stepping right to get the rightmost node
 		while (right != root) {
-			stack.push(makePair(0, right));
+			stack.push(makePair<uint8, RBNode*>(0, right));
 			right = right->right;
 		}
 		return Iterator(stack, root, false);
@@ -407,43 +415,43 @@ public:
 
 	Iterator rend() {
 		// the item after final one is nullptr
-		return Iterator(Stack<Pair<Bool, RBNode*>>(), root, false);
+		return Iterator(Stack<Pair<uint8, RBNode*>>(), root, false);
     }
 
 	ConstIterator cbegin() const {
 		// CONFIG
-		Stack<Pair<Bool, const RBNode*>> 	stack;
-		const RBNode 						*left = root->left;
+		Stack<Pair<uint8, const RBNode*>> 	stack;
+		const RBNode 						*node = root->left;
 
-		// continuously stepping left to get the leftmost node
-		while (left != root) {
-			stack.push(makePair(0, left));
-			left = left->left;
+		// continuously stepping node to get the leftmost node
+		while (node != root) {
+			stack.push(makePair<uint8, const RBNode*>(0, node));
+			node = node->left;
 		}
 		return ConstIterator(stack, root);
     }
 
 	ConstIterator cend() const {
 		// the item after final one is nullptr
-		return ConstIterator(Stack<Pair<Bool, const RBNode*>>(), root);
+		return ConstIterator();
     }
 
 	ConstIterator crbegin() const {
 		// CONFIG
-		Stack<Pair<Bool, const RBNode*>> 	stack;
-		const RBNode 						*right = root->right;
+		Stack<Pair<uint8, const RBNode*>> 	stack;
+		const RBNode 						*node = root->left;
 
-		// continuously stepping right to get the rightmost node
-		while (right != root) {
-			stack.push(makePair(0, right));
-			right = right->right;
+		// continuously stepping node to get the rightmost node
+		while (node != root) {
+			stack.push(makePair<uint8, const RBNode*>(0, node));
+			node = node->right;
 		}
 		return ConstIterator(stack, root, false);
     }
 
 	ConstIterator crend() const {
 		// the item after final one is nullptr
-		return ConstIterator(Stack<Pair<Bool, const RBNode*>>(), root, false);
+		return ConstIterator(false);
     }
 
 protected:

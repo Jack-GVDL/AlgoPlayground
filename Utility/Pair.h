@@ -34,6 +34,12 @@ public:
 	{
 	}
 
+	Pair(int):
+	first(0),
+	second(0)
+	{
+	}
+
 	Pair(First first, Second second):
 	first(first),
 	second(second)

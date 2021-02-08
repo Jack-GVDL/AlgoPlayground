@@ -34,16 +34,17 @@ public:
 
     // operation
     // modifier
-    virtual void push(Value &value) = 0;
+    virtual void push(const Value &value) = 0;
     virtual void pop() = 0;
     virtual void clear() = 0;
 
     // data access
-    virtual Value &top() = 0;
+    virtual Value& top() = 0;
+    virtual const Value& top() const = 0;
 
     // capacity
-    virtual int size() = 0;
-    virtual bool empty() = 0;
+    virtual int size() const = 0;
+    virtual bool empty() const = 0;
 
 // Operator Overload
 public:

@@ -18,11 +18,13 @@ namespace Algo {
 
 
 // Data Structure
-template <class Value, class Allocator = Vector<Value>>
+//template <class Value, class Allocator = Vector<Value>>
+template <class Value>
 class Stack: public _Queue_<Value> {
 // Data
 public:
-    Allocator container;
+//    Allocator container;
+	Vector<Value> container;
 
 // Function
 public:
@@ -42,7 +44,7 @@ public:
     }
 
     // operation
-	void push(Value &value) override {
+	void push(const Value &value) override {
     	container.push_back(value);
 	}
 
@@ -58,11 +60,15 @@ public:
 		return container.back();
 	}
 
-	int size() override {
+	const Value& top() const {
+    	return container.back();
+    }
+
+	int size() const override {
 		return container.size();
 	}
 
-	bool empty() override {
+	bool empty() const override {
 		return container.empty();
 	}
 };

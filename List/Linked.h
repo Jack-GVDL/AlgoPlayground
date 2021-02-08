@@ -153,7 +153,7 @@ public:
 
 	// operation
 	// modifier
-	void push_back(Value &value) override {
+	void push_back(const Value &value) override {
 		// create node
 		auto target = new _ListNode_<Value>(value);
 
