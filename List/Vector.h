@@ -349,20 +349,25 @@ public:
     ratio_expansion(other.ratio_expansion),
     ratio_retraction(other.ratio_retraction),
     size_allocated(other.size_allocated),
+    size_container(other.size_container),
     default_none(other.default_none) {
+
     	// copy the container
     	container = new Value[size_container];
-    	memcpy(container, other.container, other.size_allocated);
-    	this->size_allocated = other.size_allocated;
+    	memcpy(container, other.container, size_allocated * sizeof(Value));
     }
 
 	// assignment constructor
 	Vector& operator=(const Vector &other) {
-    	this->container 	 	= other.container;
     	this->size_container 	= other.size_container;
     	this->size_allocated 	= other.size_allocated;
     	this->ratio_retraction	= other.ratio_retraction;
     	this->ratio_expansion	= other.ratio_expansion;
+
+		// delete the old one and copy the new container
+		delete[] container;
+		container = new Value[size_container];
+		memcpy(container, other.container, size_allocated * sizeof(Value));
 
     	return *this;
     }
@@ -496,7 +501,7 @@ public:
 	}
 
 	const Value &front() const override {
-//    	if (size_allocated == 0) return default_none;
+    	if (size_allocated == 0) return default_none;
     	return container[0];
 	}
 
@@ -516,7 +521,7 @@ public:
 	}
 
 	Value &front() override {
-//    	if (size_allocated == 0) return default_none;
+    	if (size_allocated == 0) return default_none;
 		return container[0];
 	}
 
@@ -660,7 +665,7 @@ protected:
 
     	// allocate new array space and move data to the new container
     	auto container_new = new Value[size_container_new];
-		if (is_memcpy) memcpy(container_new, container, min(size_container_new, size_allocated) * sizeof(Value));
+		if (is_memcpy) memcpy(container_new, container, min(size_container_new, size_demand) * sizeof(Value));
 
 		// destroy old container
 		if (container_old == nullptr)	delete[] container;

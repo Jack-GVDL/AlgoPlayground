@@ -111,33 +111,33 @@ public:
 		RBNode 								*root;
 	    Stack<Pair<uint8, const RBNode*>> 	stack;
 
-		intptr_t	forward_offset;
-		intptr_t	backward_offset;
+		intptr_t	forward;
+		intptr_t	backward;
 
 	// Function
 	public:
 	    // init and del
-	    ConstIterator(Bool is_left_first_ = true):
+	    ConstIterator(Bool is_ascending = true):
 	    root(nullptr)
 	    {
-	    	forward_offset	= is_left_first_  ? getOffset(RBNode, left) : getOffset(RBNode, right);
-			backward_offset	= !is_left_first_ ? getOffset(RBNode, left) : getOffset(RBNode, right);
+			forward		= is_ascending ? getOffset(RBNode, right) : getOffset(RBNode, left);
+			backward	= is_ascending ? getOffset(RBNode, left)  : getOffset(RBNode, right);
 	    }
 
-	    ConstIterator(Stack<Pair<uint8, const RBNode*>> &stack_, RBNode *root_, Bool is_left_first_ = true):
+	    ConstIterator(Stack<Pair<uint8, const RBNode*>> &stack_, RBNode *root_, Bool is_ascending = true):
 	    root(root_)
 	    {
-			forward_offset	= is_left_first_  ? getOffset(RBNode, left) : getOffset(RBNode, right);
-			backward_offset	= !is_left_first_ ? getOffset(RBNode, left) : getOffset(RBNode, right);
+			forward		= is_ascending ? getOffset(RBNode, right) : getOffset(RBNode, left);
+			backward	= is_ascending ? getOffset(RBNode, left)  : getOffset(RBNode, right);
 	    	this->stack = stack_;
 	    }
 
 	    ConstIterator(const ConstIterator &other)
 	    {
-	    	this->root			= other.root;
-	    	this->stack 		= Stack<Pair<uint8, const RBNode*>>(other.stack);
-			forward_offset		= other.forward_offset;
-			backward_offset		= other.backward_offset;
+	    	this->root		= other.root;
+	    	this->stack 	= Stack<Pair<uint8, const RBNode*>>(other.stack);
+			forward			= other.forward;
+			backward		= other.backward;
 	    }
 
 	    ~ConstIterator() {
@@ -151,36 +151,65 @@ public:
 		// increment / decrement
 		// ++a
 		ConstIterator& operator++() {
-	    	// if user constantly check "it != map.end()"
-	    	// this statement is not needed
-	    	if (stack.empty()) return *this;
+			// if user constantly check "it != map.end()"
+			// this statement is not needed
+			if (stack.empty()) return *this;
 
-	    	// update node state
-	    	stack.top().first = 1;
+			// update node state
+			stack.top().first = 1;
 
-	    	// current node is visited, need to find the next available node
-	    	// check if can go deep into right / left
-	    	// if not, then recursively go upward
-	    	if (*getTargetPtr(stack.top().second, RBNode*, forward_offset) == root) {
+			// find the next "non-visited"
+			// there are two possible situation when finding the next target node
+			// - target node is child of current node
+			// - target node is parent of current node
+
+			// situation 1: parent
+			if (*getTargetPtr(stack.top().second, RBNode*, forward) == root) {
 				while (!stack.empty() && stack.top().first == 1) stack.pop();
 				return *this;
-	    	}
+			}
 
-	    	// go deep
-	    	const RBNode *cur = stack.top().second;
-	    	cur = *getTargetPtr(cur, RBNode*, backward_offset);
-	    	while (cur != root) {
-	    		stack.push(Pair<uint8, const RBNode*>(0, cur));
-	    		cur = *getTargetPtr(cur, RBNode*, forward_offset);
-	    	}
+			// situation 2: child
+			const RBNode *cur = stack.top().second;
+			cur = *getTargetPtr(cur, RBNode*, forward);
+			while (cur != root) {
+				stack.push(Pair<uint8, const RBNode*>(0, cur));
+				cur = *getTargetPtr(cur, RBNode*, backward);
+			}
 
-	    	return *this;
+			return *this;
 		}
 
-		// TODO
 		// --a
+		// it is almost the same as ++a
+		// but need to carefully handle the value of "visited", "forward" and "backward"
 		ConstIterator operator--() {
+			// if user constantly check "it != map.end()"
+			// this statement is not needed
+			if (stack.empty()) return *this;
 
+			// find the prev "visited"
+			// there are two possible situation when finding the next target node
+			// - target node is child of current node
+			// - target node is parent of current node
+
+			// situation 1: parent
+			if (*getTargetPtr(stack.top().second, RBNode*, backward) == root) {
+				while (!stack.empty() && stack.top().first == 0) stack.pop();
+				if (!stack.empty()) stack.top().first = 0;
+				return *this;
+			}
+
+			// situation 2: child
+			const RBNode *cur = stack.top().second;
+			cur = *getTargetPtr(cur, RBNode*, backward);
+			while (cur != root) {
+				stack.push(Pair<uint8, const RBNode*>(1, cur));
+				cur = *getTargetPtr(cur, RBNode*, forward);
+			}
+			stack.top().first = 0;
+
+			return *this;
 	    }
 
 		// a++

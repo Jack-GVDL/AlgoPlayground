@@ -258,8 +258,19 @@ bool testMap_RBTree() {
 	for (auto it = table.cbegin(); it != table.cend(); ++it) printf("%i ", *it);
 	printf("\n");
 
-	printf("cend\n");
+	printf("crbegin\n");
 	for (auto it = table.crbegin(); it != table.crend(); ++it) printf("%i ", *it);
+	printf("\n");
+
+	// check --it
+	auto const_iterator = table.cbegin();
+	for (int i = 0; i < 3; ++i) {
+		++const_iterator;
+		++const_iterator;
+		++const_iterator;
+		--const_iterator;
+		printf("%i ", *const_iterator);
+	}
 	printf("\n");
 
 //	printf("begin\n");

@@ -60,7 +60,7 @@ public:
 		return container.back();
 	}
 
-	const Value& top() const {
+	const Value& top() const override {
     	return container.back();
     }
 
