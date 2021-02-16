@@ -273,13 +273,13 @@ bool testMap_RBTree() {
 	}
 	printf("\n");
 
-//	printf("begin\n");
-//	for (auto it = table.begin(); it != table.end(); ++it) printf("%i ", *it);
-//	printf("\n");
+	printf("begin\n");
+	for (auto it = table.begin(); it != table.end(); ++it) printf("%i ", *it);
+	printf("\n");
 
-//	printf("end\n");
-//	for (auto it = table.rbegin(); it != table.rend(); ++it) printf("%i ", *it);
-//	printf("\n");
+	printf("rbegin\n");
+	for (auto it = table.rbegin(); it != table.rend(); ++it) printf("%i ", *it);
+	printf("\n");
 
 	return true;
 }

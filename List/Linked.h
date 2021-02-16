@@ -170,6 +170,7 @@ public:
 	}
 
 	void pop_back() override {
+		// CHECK
 		if (size_allocated == 0) return;
 
 		// CONFIG
@@ -179,6 +180,41 @@ public:
 		// reconnect
 		target_prev->next 	= root;
 		root->prev			= target_prev;
+
+		// delete target
+		delete target;
+
+		// update stat
+		size_allocated--;
+	}
+
+	void push_front(const Value &value) override {
+		// create node
+		auto target = new _ListNode_<Value>(value);
+
+		// reconnect
+		auto prev_next = root->next;
+
+		prev_next->prev	= target;
+		root->next		= target;
+		target->prev	= root;
+		target->next	= prev_next;
+
+		// update stat
+		size_allocated++;
+	}
+
+	void pop_front() override {
+		// CHECK
+		if (size_allocated == 0) return;
+
+		// CONFIG
+		auto	target		= root->prev;
+		auto 	target_next	= target->next;
+
+		// reconnect
+		target_next->prev	= root;
+		root->next			= target_next;
 
 		// delete target
 		delete target;

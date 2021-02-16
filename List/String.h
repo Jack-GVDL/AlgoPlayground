@@ -42,6 +42,14 @@ public:
 		container.pop_back();
 	}
 
+	void push_front(const char &value) override {
+    	container.push_front(value);
+    }
+
+    void pop_front() override {
+    	container.pop_front();
+    }
+
 	void append(const String &str) {
     	append(str.container.data(), container.size());
     }

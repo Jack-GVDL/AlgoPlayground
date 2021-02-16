@@ -395,6 +395,14 @@ public:
     	_retract_(size_allocated);
 	}
 
+	void push_front(const Value &value) override {
+    	insert(begin(), value);
+    }
+
+    void pop_front() override {
+    	erase(begin());
+    }
+
 	void clear() override {
     	delete[] container;
 
@@ -432,7 +440,7 @@ public:
 //    	assign( *((ConstIterator*)(&begin)), *((ConstIterator*)(&end)) );
 //    }
 
-    // a new element is inserted before the element at the specified position
+    // a new element is inserted BEFORE the element at the specified position
     Iterator insert(Iterator position, const Value &value) {
     	// CONFIG
     	const unsigned int	index			= (position.ptr - container) / sizeof(Value);

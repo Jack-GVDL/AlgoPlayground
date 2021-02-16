@@ -18,7 +18,7 @@ namespace Algo {
 
 
 // Data Structure
-//template <class Value, class Allocator = Vector<Value>>
+//template <class Value, class Allocator = Vector<Value>>  // TODO
 template <class Value>
 class Stack: public _Queue_<Value> {
 // Data

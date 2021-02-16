@@ -40,6 +40,8 @@ public:
     // modifier
 	virtual void push_back(const Value &value) = 0;
     virtual void pop_back() = 0;
+    virtual void push_front(const Value &value) = 0;
+    virtual void pop_front() = 0;
     virtual void clear() = 0;
 
     // data access

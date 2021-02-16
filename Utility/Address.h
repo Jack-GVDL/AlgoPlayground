@@ -21,6 +21,10 @@
 ((target_type_*)((intptr_t)addr_ + offset_))
 
 
+#define casting(addr_, dst_type_, src_class_, src_member_) \
+( getTargetPtr(addr_, dst_type_, getOffset(src_class_, src_member_)) )
+
+
 // Namespace-Begin - Algo
 namespace Algo {
 
