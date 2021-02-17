@@ -241,6 +241,11 @@ bool testMap_RBTree() {
 	for (int i = 0; i < 15; ++i) table.insert(i, i);
 
 	printf("Insertion completed\n");
+	printf("Tree: height: %i; size: %i; diff: %i\n",
+		getTreeHeight((_BiDirBinaryNode_*)table.root->left, table.root),
+		getTreeSize((_BiDirBinaryNode_*)table.root->left, table.root),
+		getTreeHeightDiff((_BiDirBinaryNode_*)table.root->left, table.root));
+
 	if (!checkRBTree_IsBalance(table.root->left, table.root)) printf("Imbalance\n");
 	printf("%s \n", getString_RBTree(table.root->left, table.root, &func_key_to_string, &func_value_to_string).c_str());
 
@@ -250,6 +255,10 @@ bool testMap_RBTree() {
 	table.erase(9);
 
 	printf("Deletion completed\n");
+	printf("Tree height: %i; Tree size: %i \n",
+		   getTreeHeight((_BiDirBinaryNode_*)table.root->left, table.root),
+		   getTreeSize((_BiDirBinaryNode_*)table.root->left, table.root));
+
 	if (!checkRBTree_IsBalance(table.root->left, table.root)) printf("Imbalance\n");
 	printf("%s \n", getString_RBTree(table.root->left, table.root, &func_key_to_string, &func_value_to_string).c_str());
 
