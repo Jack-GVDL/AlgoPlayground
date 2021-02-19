@@ -66,6 +66,13 @@ public:
     	memcpy(container.data() + container.size(), s, sizeof(char) * n);
     }
 
+    void append(char c, unsigned int n) {
+    	while (n > 0) {
+    		container.push_back(c);
+    		n--;
+    	}
+    }
+
     String& assign(const String &str) {
     	container.assign(str.container.cbegin(), str.container.cend());
     	return *this;

@@ -17,6 +17,15 @@
 namespace Algo {
 
 
+// Enum
+enum class TraversalOrder {
+	INORDER,
+	PREORDER,
+	POSTORDER,
+	SIZE_ENUM
+};
+
+
 // Data Structure
 class _UniDirBinaryNode_ {
 // Data
@@ -38,8 +47,35 @@ public:
 // Function - Prototype
 inline uint32_t _getTreeHeightDiff_(
 		_UniDirBinaryNode_ *node, uint32_t &height_max, uint32_t &height_min, void *stopper);
+
 inline uint32_t _getTreeHeightDiff_(
 		_BiDirBinaryNode_ *node, uint32_t &height_max, uint32_t &height_min, void *stopper);
+
+// traversal - uni-dir
+template <class Value>
+void _getTraversal_Inorder_(
+		_List_<Value> &dst, _UniDirBinaryNode_ *node, void *stopper, const std::function<Value(_UniDirBinaryNode_*)> &get_value);
+
+template <class Value>
+void _getTraversal_Preorder_(
+		_List_<Value> &dst, _UniDirBinaryNode_ *node, void *stopper, const std::function<Value(_UniDirBinaryNode_*)> &get_value);
+
+template <class Value>
+void _getTraversal_Postorder_(
+		_List_<Value> &dst, _UniDirBinaryNode_ *node, void *stopper, const std::function<Value(_UniDirBinaryNode_*)> &get_value);
+
+// traversal - bi-dir
+template <class Value>
+void _getTraversal_Inorder_(
+		_List_<Value> &dst, _BiDirBinaryNode_ *node, void *stopper, const std::function<Value(_BiDirBinaryNode_*)> &get_value);
+
+template <class Value>
+void _getTraversal_Preorder_(
+		_List_<Value> &dst, _BiDirBinaryNode_ *node, void *stopper, const std::function<Value(_BiDirBinaryNode_*)> &get_value);
+
+template <class Value>
+void _getTraversal_Postorder_(
+		_List_<Value> &dst, _BiDirBinaryNode_ *node, void *stopper, const std::function<Value(_BiDirBinaryNode_*)> &get_value);
 
 
 // Function - Implementation
@@ -124,13 +160,173 @@ inline uint32_t _getTreeHeightDiff_(
 
 // ordering / traversal
 // inorder: LCR
-// preorder: RLR
+// preorder: CLR
 // postorder: LRC
-// TODO
+template <class Value>
+void getTraversal(
+		_List_<Value> &dst, _UniDirBinaryNode_ *node, const std::function<Value(_UniDirBinaryNode_*)> &get_value,
+		TraversalOrder order,
+		void *stopper = nullptr) {
+
+	switch (order) {
+		case TraversalOrder::INORDER:
+			_getTraversal_Inorder_(dst, node, stopper, get_value);
+			break;
+
+		case TraversalOrder::PREORDER:
+			_getTraversal_Preorder_(dst, node, stopper, get_value);
+			break;
+
+		case TraversalOrder::POSTORDER:
+			_getTraversal_Postorder_(dst, node, stopper, get_value);
+			break;
+
+		// do nothing
+		default:
+			break;
+	}
+}
 
 
-// print node (key + value)
-// TODO
+template <class Value>
+void getTraversal(
+		_List_<Value> dst, _BiDirBinaryNode_ *node, const std::function<Value(_BiDirBinaryNode_*)> get_value,
+		TraversalOrder order,
+		void *stopper = nullptr) {
+
+	switch (order) {
+		case TraversalOrder::INORDER:
+			_getTraversal_Inorder_(dst, node, stopper, get_value);
+			break;
+
+		case TraversalOrder::PREORDER:
+			_getTraversal_Preorder_(dst, node, stopper, get_value);
+			break;
+
+		case TraversalOrder::POSTORDER:
+			_getTraversal_Postorder_(dst, node, stopper, get_value);
+			break;
+
+			// do nothing
+		default:
+			break;
+	}
+}
+
+
+// traversal - uni-dir
+template <class Value>
+void _getTraversal_Inorder_(
+		_List_<Value> &dst, _UniDirBinaryNode_ *node, void *stopper, const std::function<Value(_UniDirBinaryNode_*)> &get_value) {
+
+	if (node == nullptr || node == stopper) return;
+	_getTraversal_Inorder_(dst, node->left, stopper, get_value);
+	dst.push_back(get_value(node));
+	_getTraversal_Inorder_(dst, node->right, stopper, get_value);
+}
+
+
+template <class Value>
+void _getTraversal_Preorder_(
+		_List_<Value> &dst, _UniDirBinaryNode_ *node, void *stopper, const std::function<Value(_UniDirBinaryNode_*)> &get_value) {
+
+	if (node == nullptr || node == stopper) return;
+	dst.push_back(get_value(node));
+	_getTraversal_Preorder_(dst, node->left, stopper, get_value);
+	_getTraversal_Preorder_(dst, node->right, stopper, get_value);
+}
+
+
+template <class Value>
+void _getTraversal_Postorder_(
+		_List_<Value> &dst, _UniDirBinaryNode_ *node, void *stopper, const std::function<Value(_UniDirBinaryNode_*)> &get_value) {
+
+	if (node == nullptr || node == stopper) return;
+	_getTraversal_Postorder_(dst, node->left, stopper, get_value);
+	_getTraversal_Postorder_(dst, node->right, stopper, get_value);
+	dst.push_back(get_value(node));
+}
+
+
+// traversal - bi-dir
+template <class Value>
+void _getTraversal_Inorder_(
+		_List_<Value> &dst, _BiDirBinaryNode_ *node, void *stopper, const std::function<Value(_BiDirBinaryNode_*)> &get_value) {
+
+	if (node == nullptr || node == stopper) return;
+	_getTraversal_Inorder_(dst, node->left, stopper, get_value);
+	dst.push_back(get_value(node));
+	_getTraversal_Inorder_(dst, node->right, stopper, get_value);
+}
+
+
+template <class Value>
+void _getTraversal_Preorder_(
+		_List_<Value> &dst, _BiDirBinaryNode_ *node, void *stopper, const std::function<Value(_BiDirBinaryNode_*)> &get_value) {
+
+	if (node == nullptr || node == stopper) return;
+	dst.push_back(get_value(node));
+	_getTraversal_Preorder_(dst, node->left, stopper, get_value);
+	_getTraversal_Preorder_(dst, node->right, stopper, get_value);
+}
+
+
+template <class Value>
+void _getTraversal_Postorder_(
+		_List_<Value> &dst, _BiDirBinaryNode_ *node, void *stopper, const std::function<Value(_BiDirBinaryNode_*)> &get_value) {
+
+	if (node == nullptr || node == stopper) return;
+	_getTraversal_Postorder_(dst, node->left, stopper, get_value);
+	_getTraversal_Postorder_(dst, node->right, stopper, get_value);
+	dst.push_back(get_value(node));
+}
+
+
+// print node
+// TODO: printing order now is fixed
+// printing order: LCR
+String printTree(
+		_UniDirBinaryNode_ *node, const std::function<String(_UniDirBinaryNode_*)> &get_string,
+		void *stopper = nullptr, unsigned int indent = 4, unsigned int depth = 0) {
+
+	String string;
+	if (node == nullptr || node == stopper) return string;
+
+	// L
+	printTree(node->left, get_string, stopper, indent, depth + 1);
+
+	// C
+	string.append(' ', indent * depth);
+	string += get_string(node);
+
+	// R
+	printTree(node->right, get_string, stopper, indent, depth + 1);
+
+	// RET
+	return string;
+}
+
+
+String printTree(
+		_BiDirBinaryNode_ *node, const std::function<String(_BiDirBinaryNode_*)> &get_string,
+		void *stopper = nullptr, unsigned int indent = 4, unsigned int depth = 0) {
+
+	String string;
+	if (node == nullptr || node == stopper) return string;
+
+	// L
+	printTree(node->left, get_string, stopper, indent, depth + 1);
+
+	// C
+	string.append(' ', indent * depth);
+	string += get_string(node);
+
+	// R
+	printTree(node->right, get_string, stopper, indent, depth + 1);
+
+	// RET
+	return string;
+}
 
 
 // Namespace-End - Algo
