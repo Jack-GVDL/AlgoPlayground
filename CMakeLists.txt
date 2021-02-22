@@ -8,6 +8,7 @@ include_directories(List)
 include_directories(Map)
 include_directories(Queue)
 include_directories(UnionTree)
+include_directories(Test)
 
 add_executable(
         AlgorithmImplementation
@@ -24,4 +25,4 @@ add_executable(
         List/Vector.h
         List/List_Base.h
         List/List_Test.h
-        List/Linked.h Queue/Stack.h Queue/Queue_Base.h Queue/Queue.h Utility/Iterator.h UnionTree/UnionTree.h Utility/Algorithm.h Utility/Debug.h Map/OrderedMap_Base.h Map/OrderedMap_RBTree.h List/String.h Utility/Address.h Map/TreeNode.h)
+        List/Linked.h Queue/Stack.h Queue/Queue_Base.h Queue/Queue.h Utility/Iterator.h UnionTree/UnionTree.h Utility/Algorithm.h Utility/Debug.h Map/OrderedMap_Base.h Map/OrderedMap_RBTree.h List/String.h Utility/Address.h Map/TreeNode.h List/Sort.h Utility/Random.h Test/Test.h Test/TestOperation.h)

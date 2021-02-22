@@ -17,72 +17,77 @@ bool testMap_RBTree();
 
 // Operation
 int main() {
-//	testHash();
+	Test_testUnorderedMap();
 //	testList();
 //	testList_Vector();
 //	testList_Linked();
-	testMap_RBTree();
+//	testMap_RBTree();
     return 0;
 }
 
 
 // Function - Implementation
-bool testHash() {
+bool Test_testUnorderedMap() {
 	// CONFIG
 	const int size_container = 100;
+	UnorderedMap_Simple<int, int> unordered_map_simple(size_container);
 
-	// ----- lambda -----
-	std::function<void(const std::string&)> func_log 				= [](const std::string &content) 	-> void 		{ std::cout << content << std::endl; };
-	std::function<std::string(const int)>	func_key_to_string		= [](const int key) 				-> std::string 	{ return std::to_string(key); };
-	std::function<std::string(const int)>	func_value_to_string	= [](const int value) 				-> std::string 	{ return std::to_string(value); };
+	// parameter
+	TestOperation_UnorderedMap_Base<int, int>::Parameter parameter = {&unordered_map_simple};
 
-	// ----- operation_list list -----
-	Pair<HashOperation, Pair<int, int>> operation_list[] = {
-		makeHashOperation(HashOperation::INSERT,	0, 0),
-		makeHashOperation(HashOperation::INSERT,	-1, -1),
-		makeHashOperation(HashOperation::INSERT,	size_container, size_container),
-		makeHashOperation(HashOperation::INSERT, 	size_container + 1, size_container + 1),
-		makeHashOperation(HashOperation::ERASE, 	size_container + 2, 0),
-		makeHashOperation(HashOperation::ERASE, 	size_container + 1, 0),
-		makeHashOperation(HashOperation::INSERT,	size_container * 2 + 1, size_container * 2 + 1),
-		makeHashOperation(HashOperation::AT,		0, 0),
-		makeHashOperation(HashOperation::AT,		-1, -1),
-		makeHashOperation(HashOperation::AT, 		size_container, size_container),
-		makeHashOperation(HashOperation::AT,		size_container * 2 + 1, size_container * 2 + 1),
-		makeHashOperation(HashOperation::NOT_AT, 	size_container + 2,	-1),
-		makeHashOperation(HashOperation::CLEAR, 	0, 0)
-	};
+	// operation
+	TestOperation_UnorderedMap_Insert<int, int> ops_insert_1(1, 1);
+	TestOperation_UnorderedMap_Insert<int, int> ops_insert_2(-1, -1);
+	TestOperation_UnorderedMap_Insert<int, int> ops_insert_3(size_container, size_container);
+	TestOperation_UnorderedMap_Insert<int, int> ops_insert_4(size_container + 1, size_container + 1);
+	TestOperation_UnorderedMap_Insert<int, int> ops_insert_5(size_container * 2 + 1, size_container * 2 + 1);
 
-	// ----- hash table list -----
-	// hash table list
-	_UnorderedMap_<int, int>* hash_list[] = {
-			new UnorderedMap_Simple<int, int>(size_container),
-			new UnorderedMap_Dynamic<int, int>(4)
-	};
+	TestOperation_UnorderedMap_Erase<int, int> ops_erase_1(size_container + 2);
+	TestOperation_UnorderedMap_Erase<int, int> ops_erase_2(size_container + 1);
 
-	// ----- get list size -----
-	int size_operation	= sizeof(operation_list) / sizeof(Pair<int, Pair<int, int>>);
-	int size_table		= sizeof(hash_list) / sizeof(_UnorderedMap_<int, int>*);
+	TestOperation_UnorderedMap_At<int, int> ops_at_1(0, 0, true);
+	TestOperation_UnorderedMap_At<int, int> ops_at_2(-1, -1, true);
+	TestOperation_UnorderedMap_At<int, int> ops_at_3(size_container * 2 + 1, size_container * 2 + 1, true);
+	TestOperation_UnorderedMap_At<int, int> ops_at_4(1, -1, false);
 
-	// ----- testing -----
-	// actual testing
-	for (int i = 0; i < size_table; ++i) {
+	TestOperation_UnorderedMap_Clear<int, int> ops_clear_1;
 
-		// separation
-		func_log(std::string("\n----- test -----\n"));
+	// lambda function
+	std::function<std::string(const int)> func_int_to_string =
+			[](const int value) -> std::string { return std::to_string(value); };
 
-		int result = runOperation_Hash(
-						*hash_list[i],
-						operation_list,
-						size_operation,
-						&func_log,
-						&func_key_to_string,
-						&func_value_to_string
-					);
+	std::function<void(const std::string&)> func_output =
+			[](const std::string& s) -> void { printf("%s", s.c_str()); };
 
-		if (result == 0) continue;
-		return false;
-	}
+	ops_insert_1.func_value_to_string = ops_insert_1.func_key_to_string = &func_int_to_string;
+	ops_insert_2.func_value_to_string = ops_insert_2.func_key_to_string = &func_int_to_string;
+	ops_insert_3.func_value_to_string = ops_insert_3.func_key_to_string = &func_int_to_string;
+	ops_insert_4.func_value_to_string = ops_insert_4.func_key_to_string = &func_int_to_string;
+	ops_insert_5.func_value_to_string = ops_insert_5.func_key_to_string = &func_int_to_string;
+
+	ops_erase_1.func_value_to_string = ops_erase_1.func_key_to_string = &func_int_to_string;
+	ops_erase_2.func_value_to_string = ops_erase_2.func_key_to_string = &func_int_to_string;
+
+	ops_at_1.func_value_to_string = ops_at_1.func_key_to_string = &func_int_to_string;
+	ops_at_2.func_value_to_string = ops_at_2.func_key_to_string = &func_int_to_string;
+	ops_at_3.func_value_to_string = ops_at_3.func_key_to_string = &func_int_to_string;
+	ops_at_4.func_value_to_string = ops_at_4.func_key_to_string = &func_int_to_string;
+
+	ops_clear_1.func_value_to_string = ops_clear_1.func_key_to_string = &func_int_to_string;
+
+	// CORE
+	ops_insert_1.execute(&parameter, &func_output);
+	ops_insert_2.execute(&parameter, &func_output);
+	ops_insert_3.execute(&parameter, &func_output);
+	ops_insert_4.execute(&parameter, &func_output);
+	ops_erase_1.execute(&parameter, &func_output);
+	ops_erase_2.execute(&parameter, &func_output);
+	ops_insert_5.execute(&parameter, &func_output);
+	ops_at_1.execute(&parameter, &func_output);
+	ops_at_2.execute(&parameter, &func_output);
+	ops_at_3.execute(&parameter, &func_output);
+	ops_at_4.execute(&parameter, &func_output);
+	ops_clear_1.execute(&parameter, &func_output);
 
 	return true;
 }
@@ -148,50 +153,57 @@ bool testList_Vector() {
 	printf("----- Vector -----\n");
 
 	// create a container
-	Vector<int> vector;
+	Vector<int> vector_1;
 	Vector<int> vector_2;
-//	vector.resize(20);
-//	vector.reserve(20);
+//	vector_1.resize(20);
+//	vector_1.reserve(20);
 
 	vector_2.resize(20, 3);
 
 	// push some item into it
 	for (int i = 0; i < 30; ++i) {
-		vector.push_back(i);
-		printf("%i ", vector[i]);
+		vector_1.push_back(getRandomInt());
+		printf("%i ", vector_1[i]);
 	}
 	printf("\n");
 
-	vector.assign(vector_2.begin(), vector_2.end());
-
-	vector.insert(vector.begin() + 5, 100);
-	vector.erase(vector.begin() + 10);
+//	vector_1.assign(vector_2.begin(), vector_2.end());
+//
+//	vector_1.insert(vector_1.begin() + 5, 100);
+//	vector_1.erase(vector_1.begin() + 10);
 
 	// stat
-	printf("Size: %i\n", vector.size());
-	printf("Capacity: %i\n", vector.capacity());
+	printf("Size: %i\n", vector_1.size());
+	printf("Capacity: %i\n", vector_1.capacity());
+
+	// sort
+//	sortList(vector_1.begin(), vector_1.end());
 
 	// use iterator to get the item one by one
 	// const iterator: begin
-	for (Vector<int>::ConstIterator it = vector.cbegin(); it < vector.cend(); it = it + 3) {
+	printf("cbegin\n");
+	for (Vector<int>::ConstIterator it = vector_1.cbegin(); it < vector_1.cend(); it = it + 3) {
 		printf("%i ", *(it));
 	}
 	printf("\n");
 
 	// iterator: begin
-	for (Vector<int>::Iterator it = vector.begin(); it != vector.end(); ++it) {
+	printf("begin\n");
+	for (Vector<int>::Iterator it = vector_1.begin(); it != vector_1.end(); ++it) {
 		printf("%i ", *(it));
 	}
 	printf("\n");
 
 	// const iterator: rbegin
-	for (Vector<int>::ConstIterator it = vector.crbegin(); it != vector.crend(); ++it) {
+	printf("crbegin\n");
+	for (Vector<int>::ConstIterator it = vector_1.crbegin(); it != vector_1.crend(); ++it) {
 		printf("%i ", *(it));
 	}
 	printf("\n");
 
 	// iterator: rbegin
-	for (Vector<int>::Iterator it = vector.rbegin(); it != vector.rend(); ++it) {
+	printf("rbegin\n");
+	for (Vector<int>::Iterator it = vector_1.rbegin(); it != vector_1.rend(); ++it) {
 		printf("%i ", *(it));
 	}
 	printf("\n");

@@ -120,6 +120,10 @@ public:
 			return *this;
 		}
 
+		int operator-(ConstIterator &other) {
+			return (other.ptr - this->ptr) / sizeof(Value);
+		}
+
 		// comparison
 		// a == b
 		bool operator==(const ConstIterator &other) const {
@@ -164,7 +168,7 @@ public:
 	};
 
 
-	//	class Iterator: public _Iterator_<Value> {
+	//	class Iterator: public Iterator {
 	// class Iterator: public Vector<Value>::ConstIterator {
 	class Iterator {
 
@@ -216,14 +220,14 @@ public:
 		}
 
 		// a++
-		Iterator operator++(int i) {
+		Iterator operator++(int) {
 			Iterator temp = *this;
 			ptr += forward;
 			return temp;
 		}
 
 		// --a
-		Iterator operator--(int i) {
+		Iterator operator--(int) {
 			Iterator temp = *this;
 			ptr -= forward;
 			return temp;
@@ -240,6 +244,10 @@ public:
 		Iterator operator-(const unsigned int i) {
 			ptr -= i;
 			return *this;
+		}
+
+		int operator-(Iterator &other) {
+			return (this->ptr - other.ptr) / sizeof(Value);
 		}
 
 		// comparison

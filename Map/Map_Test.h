@@ -10,6 +10,7 @@
 
 // Import
 #include "UnorderedMap_Base.h"
+#include <Test.h>
 #include <string>
 #include <functional>
 
@@ -19,207 +20,314 @@ namespace Algo {
 
 
 // Enum
-enum class HashOperation {
-	INSERT,
-	ERASE,
-	CLEAR,
-	AT,
-	NOT_AT,
-	NONE,
-	SIZE_ENUM
-};
+//enum class HashOperation {
+//	INSERT,
+//	ERASE,
+//	CLEAR,
+//	AT,
+//	NOT_AT,
+//	NONE,
+//	SIZE_ENUM
+//};
 
 
 // Data Structure
-// ...
-
-
-// Function - Prototype
 template <class Key, class Value>
-Pair<HashOperation, Pair<Key, Value>> maskHashOperation(
-		HashOperation 	operation,
-		Key 			key,
-		Value 			value);
+class TestOperation_UnorderedMap_Base: public TestOperation {
+// Class
+public:
+	struct Parameter {
+	public:
+		_UnorderedMap_<Key, Value>	*unordered_map;
+	};
+
+// Data
+public:
+	std::function<std::string(const Key)>	*func_key_to_string		= nullptr;
+	std::function<std::string(const Value)>	*func_value_to_string 	= nullptr;
+
+// Function
+public:
+    // init and del
+    TestOperation_UnorderedMap_Base()
+    {
+    }
+
+    ~TestOperation_UnorderedMap_Base() {
+    }
+
+    // operation
+    // ...
+
+// Operator Overload
+public:
+	// ...
+};
 
 
 template <class Key, class Value>
-int runOperation_Hash(
-		_UnorderedMap_<Key, Value> 						&hash_table,
-		Pair<HashOperation, Pair<Key, Value>> 			*operation,
-		int 											size_operation,
-		const std::function<void(const std::string&)>	*func_log 				= nullptr,
-		const std::function<std::string(const Key)> 	*func_key_to_string 	= nullptr,
-		const std::function<std::string(const Value)>	*func_value_to_string 	= nullptr);
+class TestOperation_UnorderedMap_Insert: public TestOperation_UnorderedMap_Base<Key, Value> {
+// Class
+public:
+	struct Config {
+	public:
+		Key		key;
+		Value	value;
+	};
 
+// Data
+public:
+	Config config;
 
-template <class Key, class Value>
-std::string getOperationString(
-		const Pair<HashOperation, Pair<Key, Value>>				&operation,
-		const std::function<std::string(const Key)> 			*func_key_to_string,
-		const std::function<std::string(const Value)>			*func_value_to_string);
+// Function
+public:
+    // init and del
+    TestOperation_UnorderedMap_Insert(const Config &config):
+    TestOperation_UnorderedMap_Base<Key, Value>(),
+    config(config)
+    {
+    }
 
-
-// Function - Implementation
-template <class Key, class Value>
-Pair<HashOperation, Pair<Key, Value>> makeHashOperation(
-		HashOperation 	operation,
-		Key 			key,
-		Value 			value) {
-
-	// fix parameter
-	switch (operation) {
-		case HashOperation::INSERT:
-			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(key, value));
-		case HashOperation::ERASE:
-			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(key, 0));
-		case HashOperation::CLEAR:
-			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(0, 0));
-		case HashOperation::AT:
-			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(key, value));
-		case HashOperation::NOT_AT:
-			return Pair<HashOperation, Pair<Key, Value>>(operation, Pair<Key, Value>(key, value));
-		default:
-			return Pair<HashOperation, Pair<Key, Value>>(HashOperation::NONE, Pair<Key, Value>(0, 0));
+    TestOperation_UnorderedMap_Insert(Key key, Value value):
+    config({key, value})
+	{
 	}
-}
+
+    ~TestOperation_UnorderedMap_Insert() {
+    }
+
+    // operation
+	int8 execute(void *object, const std::function<void(const std::string&)> *output = nullptr) override {
+		if (object == nullptr) return -1;
+    	auto *parameter =
+				(typename TestOperation_UnorderedMap_Base<Key, Value>::Parameter*)object;
+
+    	// operation
+    	if (parameter->unordered_map == nullptr) return -1;
+		parameter->unordered_map->insert(config.key, config.value);
+
+		// observe
+		// ...
+
+		// result
+		if (output == nullptr) return 0;
+		if (this->func_key_to_string == nullptr || this->func_value_to_string == nullptr) return 0;
+
+		std::string content;
+		content += "Insert key: ";
+		content += (*this->func_key_to_string)(config.key);
+		content += ", value: ";
+		content += (*this->func_value_to_string)(config.value);
+		content += '\n';
+
+		(*output)(content);
+
+		return 0;
+	}
+
+// Operator Overload
+public:
+	// ...
+};
 
 
 template <class Key, class Value>
-int runOperation_Hash(
-		_UnorderedMap_<Key, Value> 						&hash_table,
-		Pair<HashOperation, Pair<Key, Value>> 			*operation,
-		int 											size_operation,
-		const std::function<void(const std::string&)>	*func_log,
-		const std::function<std::string(const Key)> 	*func_key_to_string,
-		const std::function<std::string(const Value)>	*func_value_to_string) {
+class TestOperation_UnorderedMap_Erase: public TestOperation_UnorderedMap_Base<Key, Value> {
+// Class
+public:
+	struct Config {
+	public:
+		Key		key;
+	};
 
-	// CONFIG
-	Value temp;
+// Data
+public:
+	Config config;
 
-	// CORE
-	for (int i = 0; i < size_operation; ++i) {
-		// string for logging
-		std::string content;
-		content += getOperationString(operation[i], func_key_to_string, func_value_to_string);
+// Function
+public:
+	// init and del
+	TestOperation_UnorderedMap_Erase(const Config &config):
+			TestOperation_UnorderedMap_Base<Key, Value>(),
+			config(config)
+	{
+	}
+
+	TestOperation_UnorderedMap_Erase(Key key):
+			config({key})
+	{
+	}
+
+	~TestOperation_UnorderedMap_Erase() {
+	}
+
+	// operation
+	int8 execute(void *object, const std::function<void(const std::string&)> *output = nullptr) override {
+		if (object == nullptr) return -1;
+		auto *parameter =
+				(typename TestOperation_UnorderedMap_Base<Key, Value>::Parameter*)object;
 
 		// operation
-		try {
+		if (parameter->unordered_map == nullptr) return -1;
+		parameter->unordered_map->erase(config.key);
 
-			switch (operation[i].first) {
-				case HashOperation::INSERT:
-					// insert
-					// [key, value(used to insert)]
-					hash_table.insert(operation[i].second.first, operation[i].second.second);
-					break;
+		// observe
+		// ...
 
-				case HashOperation::ERASE:
-					// erase
-					// [key, ignore]
-					hash_table.erase(operation[i].second.first);
-					break;
+		// result
+		if (output == nullptr) return 0;
+		if (this->func_key_to_string == nullptr || this->func_value_to_string == nullptr) return 0;
 
-				case HashOperation::CLEAR:
-					// clear
-					// [ignore, ignore]
-					hash_table.clear();
-					break;
+		std::string content;
+		content += "Erase key: ";
+		content += (*this->func_key_to_string)(config.key);
+		content += '\n';
 
-				case HashOperation::AT:
-					// at
-					// [key, value(used to compare with table)]
-					temp = hash_table.at(operation[i].second.first);
-					if (temp != operation[i].second.second) throw std::runtime_error("");
-					break;
+		(*output)(content);
 
-				case HashOperation::NOT_AT:
-					// not at
-					// [key, value(used to compare with table)]
-					temp = hash_table.at(operation[i].second.first);
-					if (temp == operation[i].second.second) throw std::runtime_error("");
-					break;
-
-				default:
-					break;
-			}
-
-		} catch (...) {
-			content += " => false";
-			if (func_log != nullptr) (*func_log)(content);
-			return i;
-		}
-
-		// log
-		content += " => true";
-		if (func_log != nullptr) (*func_log)(content);
-
+		return 0;
 	}
 
-	// everything is fine
-	return 0;
-}
+// Operator Overload
+public:
+	// ...
+};
 
 
 template <class Key, class Value>
-std::string getOperationString(
-		const Pair<HashOperation, Pair<Key, Value>>	&operation,
-		const std::function<std::string(Key)> 					*func_key_to_string,
-		const std::function<std::string(Value)>					*func_value_to_string) {
+class TestOperation_UnorderedMap_At: public TestOperation_UnorderedMap_Base<Key, Value> {
+// Class
+public:
+	struct Config {
+	public:
+		Key		key;
+		Value	value;
+		bool	is_present;
+	};
 
-	// CHECK
-	if (func_key_to_string == nullptr || func_value_to_string == nullptr) return std::string();
+// Data
+public:
+	Config config;
 
-	// CONFIG
-	std::string content;
-
-	// CORE
-	switch (operation.first) {
-		case HashOperation::INSERT:
-			// insert
-			// [key, value (used to insert)]
-			content += "insert: key: ";
-			content += (*func_key_to_string)(operation.second.first);
-			content += ", value: ";
-			content += (*func_value_to_string)(operation.second.second);
-			break;
-
-		case HashOperation::ERASE:
-			// erase
-			// [key, ignore]
-			content += "erase: key: ";
-			content += (*func_key_to_string)(operation.second.first);
-			break;
-
-		case HashOperation::CLEAR:
-			// clear
-			// [ignore, ignore]
-			content += "clear";
-			break;
-
-		case HashOperation::AT:
-			// at
-			// [key, value(used to compare with table)]
-			content += "at: key: ";
-			content += (*func_key_to_string)(operation.second.first);
-			content += ", value (for comparison): ";
-			content += (*func_value_to_string)(operation.second.second);
-			break;
-
-		case HashOperation::NOT_AT:
-			// not at
-			// [key, value(used to compare with table)]
-			content += "not at: key: ";
-			content += (*func_key_to_string)(operation.second.first);
-			content += ", value (for comparison): ";
-			content += (*func_value_to_string)(operation.second.second);
-			break;
-
-		default:
-			break;
+// Function
+public:
+	// init and del
+	TestOperation_UnorderedMap_At(const Config &config):
+	TestOperation_UnorderedMap_Base<Key, Value>(),
+	config(config)
+	{
 	}
 
-	// RET
-	return content;
-}
+	TestOperation_UnorderedMap_At(Key key, Value value, bool is_present = true):
+	config({key, value, is_present})
+	{
+	}
+
+	~TestOperation_UnorderedMap_At() {
+	}
+
+	// operation
+	int8 execute(void *object, const std::function<void(const std::string&)> *output = nullptr) override {
+		if (object == nullptr) return -1;
+		auto *parameter =
+				(typename TestOperation_UnorderedMap_Base<Key, Value>::Parameter*)object;
+
+		// operation
+		if (parameter->unordered_map == nullptr) return -1;
+		Value value = parameter->unordered_map->at(config.key);
+
+		// observe
+		// observation is not expected
+		int8_t ret = 0;
+		if ((value == config.value) != config.is_present) ret = 1;
+
+		// result
+		if (output == nullptr) return 0;
+		if (this->func_key_to_string == nullptr || this->func_value_to_string == nullptr) return 0;
+
+		std::string content;
+		content += "At key: ";
+		content += (*this->func_key_to_string)(config.key);
+		content += ", value: ";
+		content += (*this->func_value_to_string)(value);
+		content += " (";
+		content += ret == 0 ? "true" : "false";
+		content += ")\n";
+
+		(*output)(content);
+
+		return ret;
+	}
+
+// Operator Overload
+public:
+	// ...
+};
+
+
+template <class Key, class Value>
+class TestOperation_UnorderedMap_Clear: public TestOperation_UnorderedMap_Base<Key, Value> {
+// Class
+public:
+	struct Config {
+	public:
+		// ...
+	};
+
+// Data
+public:
+	Config config;
+
+// Function
+public:
+	// init and del
+	TestOperation_UnorderedMap_Clear(const Config &config):
+	TestOperation_UnorderedMap_Base<Key, Value>(),
+	config(config)
+	{
+	}
+
+	TestOperation_UnorderedMap_Clear()
+	{
+	}
+
+	~TestOperation_UnorderedMap_Clear() {
+	}
+
+	// operation
+	int8 execute(void *object, const std::function<void(const std::string&)> *output = nullptr) override {
+		if (object == nullptr) return -1;
+		auto *parameter =
+				(typename TestOperation_UnorderedMap_Base<Key, Value>::Parameter*)object;
+
+		// operation
+		if (parameter->unordered_map == nullptr) return -1;
+		parameter->unordered_map->clear();
+
+		// observe
+		// ...
+
+		// result
+		if (output == nullptr) return 0;
+		if (this->func_key_to_string == nullptr || this->func_value_to_string == nullptr) return 0;
+
+		std::string content;
+		content += "Clear ";
+		content += "\n";
+
+		(*output)(content);
+
+		return 0;
+	}
+
+// Operator Overload
+public:
+	// ...
+};
+
+
+// Function
+// ...
 
 
 // Namespace: Algo
