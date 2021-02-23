@@ -1,4 +1,5 @@
 #include <iostream>
+#include <Utility.h>
 #include "Map/Map.h"
 #include "List/List.h"
 
@@ -8,20 +9,22 @@ using namespace Algo;
 
 
 // Function - Prototype
-bool testHash();
-bool testList();
-bool testList_Vector();  // test the iterator
-bool testList_Linked();  // test the iterator
-bool testMap_RBTree();
+bool Test_testUnorderedMap();
+bool Test_testList();
+bool Test_testVector();  // test the iterator
+bool Test_testLinked();  // test the iterator
+bool Test_testMap();
+bool Test_testSort_QuickSort();
 
 
 // Operation
 int main() {
-	Test_testUnorderedMap();
-//	testList();
-//	testList_Vector();
-//	testList_Linked();
-//	testMap_RBTree();
+//	Test_testUnorderedMap();
+//	Test_testList();
+//	Test_testVector();
+//	Test_testLinked();
+//	Test_testMap();
+	Test_testSort_QuickSort();
     return 0;
 }
 
@@ -52,104 +55,101 @@ bool Test_testUnorderedMap() {
 
 	TestOperation_UnorderedMap_Clear<int, int> ops_clear_1;
 
+	TestCluster cluster;
+	cluster.addOperation(&ops_insert_1);
+	cluster.addOperation(&ops_insert_2);
+	cluster.addOperation(&ops_insert_3);
+	cluster.addOperation(&ops_insert_4);
+	cluster.addOperation(&ops_insert_5);
+	cluster.addOperation(&ops_erase_1);
+	cluster.addOperation(&ops_erase_2);
+	cluster.addOperation(&ops_at_1);
+	cluster.addOperation(&ops_at_2);
+	cluster.addOperation(&ops_at_3);
+	cluster.addOperation(&ops_at_4);
+	cluster.addOperation(&ops_clear_1);
+
 	// lambda function
 	std::function<std::string(const int)> func_int_to_string =
 			[](const int value) -> std::string { return std::to_string(value); };
 
-	std::function<void(const std::string&)> func_output =
-			[](const std::string& s) -> void { printf("%s", s.c_str()); };
-
-	ops_insert_1.func_value_to_string = ops_insert_1.func_key_to_string = &func_int_to_string;
-	ops_insert_2.func_value_to_string = ops_insert_2.func_key_to_string = &func_int_to_string;
-	ops_insert_3.func_value_to_string = ops_insert_3.func_key_to_string = &func_int_to_string;
-	ops_insert_4.func_value_to_string = ops_insert_4.func_key_to_string = &func_int_to_string;
-	ops_insert_5.func_value_to_string = ops_insert_5.func_key_to_string = &func_int_to_string;
-
-	ops_erase_1.func_value_to_string = ops_erase_1.func_key_to_string = &func_int_to_string;
-	ops_erase_2.func_value_to_string = ops_erase_2.func_key_to_string = &func_int_to_string;
-
-	ops_at_1.func_value_to_string = ops_at_1.func_key_to_string = &func_int_to_string;
-	ops_at_2.func_value_to_string = ops_at_2.func_key_to_string = &func_int_to_string;
-	ops_at_3.func_value_to_string = ops_at_3.func_key_to_string = &func_int_to_string;
-	ops_at_4.func_value_to_string = ops_at_4.func_key_to_string = &func_int_to_string;
-
-	ops_clear_1.func_value_to_string = ops_clear_1.func_key_to_string = &func_int_to_string;
+	ops_insert_1.func_value_to_string	= ops_insert_1.func_key_to_string	= &func_int_to_string;
+	ops_insert_2.func_value_to_string	= ops_insert_2.func_key_to_string	= &func_int_to_string;
+	ops_insert_3.func_value_to_string	= ops_insert_3.func_key_to_string	= &func_int_to_string;
+	ops_insert_4.func_value_to_string	= ops_insert_4.func_key_to_string	= &func_int_to_string;
+	ops_insert_5.func_value_to_string	= ops_insert_5.func_key_to_string	= &func_int_to_string;
+	ops_erase_1.func_value_to_string	= ops_erase_1.func_key_to_string	= &func_int_to_string;
+	ops_erase_2.func_value_to_string	= ops_erase_2.func_key_to_string	= &func_int_to_string;
+	ops_at_1.func_value_to_string		= ops_at_1.func_key_to_string		= &func_int_to_string;
+	ops_at_2.func_value_to_string		= ops_at_2.func_key_to_string		= &func_int_to_string;
+	ops_at_3.func_value_to_string		= ops_at_3.func_key_to_string		= &func_int_to_string;
+	ops_at_4.func_value_to_string		= ops_at_4.func_key_to_string		= &func_int_to_string;
+	ops_clear_1.func_value_to_string 	= ops_clear_1.func_key_to_string 	= &func_int_to_string;
 
 	// CORE
-	ops_insert_1.execute(&parameter, &func_output);
-	ops_insert_2.execute(&parameter, &func_output);
-	ops_insert_3.execute(&parameter, &func_output);
-	ops_insert_4.execute(&parameter, &func_output);
-	ops_erase_1.execute(&parameter, &func_output);
-	ops_erase_2.execute(&parameter, &func_output);
-	ops_insert_5.execute(&parameter, &func_output);
-	ops_at_1.execute(&parameter, &func_output);
-	ops_at_2.execute(&parameter, &func_output);
-	ops_at_3.execute(&parameter, &func_output);
-	ops_at_4.execute(&parameter, &func_output);
-	ops_clear_1.execute(&parameter, &func_output);
+	cluster.execute(&parameter);
 
+	for (std::string &s : cluster.log_list) printf("%s", s.c_str());
 	return true;
 }
 
 
-bool testList() {
+bool Test_testList() {
 	// CONFIG
-	// ...
+	Vector<int> list_vector;
 
-	// ----- lambda -----
-	std::function<void(const std::string&)> func_log 				= [](const std::string &content) 	-> void 		{ std::cout << content << std::endl; };
-	std::function<std::string(const int)>	func_key_to_string		= [](const int key) 				-> std::string 	{ return std::to_string(key); };
-	std::function<std::string(const int)>	func_value_to_string	= [](const int value) 				-> std::string 	{ return std::to_string(value); };
+	// parameter
+	TestOperation_List_Base<int>::Parameter parameter = {&list_vector};
 
-	// ----- operation_list list -----
-	Pair<ListOperation, Pair<int, int>> operation_list[] = {
-			makeListOperation(ListOperation::PUSH_BACK, 0, 0),
-			makeListOperation(ListOperation::PUSH_BACK, 0, 1),
-			makeListOperation(ListOperation::PUSH_BACK, 0, 2),
-			makeListOperation(ListOperation::PUSH_BACK, 0, 3),
-			makeListOperation(ListOperation::POP_BACK, 0, 0),
-			makeListOperation(ListOperation::AT, 2, 2),
-			makeListOperation(ListOperation::AT, 3, 0),
-			makeListOperation(ListOperation::NOT_AT, 3, -1),
-			makeListOperation(ListOperation::CLEAR, 0, 0)
-	};
+	// operation
+	TestOperation_List_PushBack<int> ops_push_back_1(0);
+	TestOperation_List_PushBack<int> ops_push_back_2(1);
+	TestOperation_List_PushBack<int> ops_push_back_3(2);
+	TestOperation_List_PushBack<int> ops_push_back_4(3);
 
-	// ----- list list -----
-	// list of list
-	_List_<int>* list_list[] = {
-			new Linked<int>(),
-			new Vector<int>()
-	};
+	TestOperation_List_PopBack<int> ops_pop_back_1;
 
-	// ----- get list size -----
-	int	size_operation	= sizeof(operation_list) / sizeof(Pair<ListOperation, Pair<int, int>>);
-	int size_list		= sizeof(list_list) /sizeof(_List_<int>*);
+	TestOperation_List_Clear<int> ops_clear_1;
 
-	// ----- actual testing -----
-	for (int i = 0; i < size_list; ++i) {
+	TestOperation_List_At<int> ops_at_1(2, 2, true);
+	TestOperation_List_At<int> ops_at_2(3, 0, true);
+	TestOperation_List_At<int> ops_at_3(3, -1, false);
 
-		// separation
-		func_log(std::string("\n----- test -----\n"));
+	TestCluster cluster;
+	cluster.addOperation(&ops_push_back_1);
+	cluster.addOperation(&ops_push_back_2);
+	cluster.addOperation(&ops_push_back_3);
+	cluster.addOperation(&ops_push_back_4);
+	cluster.addOperation(&ops_pop_back_1);
+	cluster.addOperation(&ops_push_back_1);
+	cluster.addOperation(&ops_at_1);
+	cluster.addOperation(&ops_at_2);
+	cluster.addOperation(&ops_at_3);
+	cluster.addOperation(&ops_clear_1);
 
-		int result = runOperation_List(
-				*list_list[i],
-				operation_list,
-				size_operation,
-				&func_log,
-				&func_key_to_string,
-				&func_value_to_string
-		);
+	// lambda function
+	std::function<std::string(const int)> func_int_to_string =
+			[](const int value) -> std::string { return std::to_string(value); };
 
-		if (result == 0) continue;
-		return false;
-	}
+	ops_push_back_1.func_value_to_string	= &func_int_to_string;
+	ops_push_back_2.func_value_to_string	= &func_int_to_string;
+	ops_push_back_3.func_value_to_string	= &func_int_to_string;
+	ops_push_back_4.func_value_to_string	= &func_int_to_string;
+	ops_pop_back_1.func_value_to_string		= &func_int_to_string;
+	ops_clear_1.func_value_to_string		= &func_int_to_string;
+	ops_at_1.func_value_to_string			= &func_int_to_string;
+	ops_at_2.func_value_to_string			= &func_int_to_string;
+	ops_at_3.func_value_to_string			= &func_int_to_string;
 
+	// CORE
+	cluster.execute(&parameter);
+
+	for (std::string &s : cluster.log_list) printf("%s", s.c_str());
 	return true;
 }
 
 
-bool testList_Vector() {
+bool Test_testVector() {
 	printf("----- Vector -----\n");
 
 	// create a container
@@ -213,7 +213,7 @@ bool testList_Vector() {
 }
 
 
-bool testList_Linked() {
+bool Test_testLinked() {
 	printf("----- Linked -----\n");
 
 	// create a container
@@ -242,7 +242,7 @@ bool testList_Linked() {
 }
 
 
-bool testMap_RBTree() {
+bool Test_testMap() {
 	// CONFIG
 	OrderedMap_RBTree<int, int> table;
 
@@ -301,6 +301,28 @@ bool testMap_RBTree() {
 	printf("rbegin\n");
 	for (auto it = table.rbegin(); it != table.rend(); ++it) printf("%i ", *it);
 	printf("\n");
+
+	return true;
+}
+
+
+int8 compare(void *a, void *b) {
+	if ( *((int*)a) == *((int*)b) ) return 0;
+	if ( *((int*)a) < *((int*)b) )	return 1;
+	return -1;
+}
+
+
+bool Test_testSort_QuickSort() {
+	// CONFIG
+	int number_list[] = {10, 23, 23, 23, 23, 23, 23, 23, 23, 38, 29, 383, 348, 201, 383, 128, 163};
+
+	// CORE
+	sort_QuickSort(number_list, sizeof(int), sizeof(number_list), compare);
+
+	for (int i = 0; i < sizeof(number_list) / sizeof(int); ++i) {
+		printf("%i ", number_list[i]);
+	}
 
 	return true;
 }

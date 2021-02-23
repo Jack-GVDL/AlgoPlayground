@@ -10,6 +10,7 @@
 
 // Import
 #include "List_Base.h"
+#include <Test.h>
 #include <string>
 #include <functional>
 
@@ -19,205 +20,266 @@ namespace Algo {
 
 
 // Enum
-enum class ListOperation {
-	PUSH_BACK,
-	POP_BACK,
-	CLEAR,
-	AT,
-	NOT_AT,
-	NONE,
-//	SIZE_ENUM
-};
-
-
-// Data Structure
 // ...
 
 
-// Function - Prototype
+// Data Structure
 template <class Value>
-Pair<ListOperation, Pair<int, Value>> maskListOperation(
-		ListOperation	operation,
-		int				position,
-		Value			value);
+class TestOperation_List_Base: public TestOperation {
+// Class
+public:
+	struct Parameter {
+	public:
+		_List_<Value>	*list;
+	};
 
+// Data
+public:
+	std::function<std::string(const Value)>	*func_value_to_string 	= nullptr;
 
-template <class Value>
-int runOperation_List(
-		_List_<Value>									&list,
-		Pair<ListOperation, Pair<int, Value>>			*operation,
-		int												size_operation,
-		const std::function<void(const std::string&)>	*func_log				= nullptr,
-		const std::function<std::string(const int)>		*func_key_to_string		= nullptr,
-		const std::function<std::string(const Value)>	*func_value_to_string 	= nullptr);
+// Function
+public:
+    // init and del
+    TestOperation_List_Base() {
 
+    }
 
-template <class Value>
-std::string getOperationString(
-		const Pair<ListOperation, Pair<int, Value>>		&operation,
-		const std::function<std::string(const int)>		*func_key_to_string,
-		const std::function<std::string(const Value)>	*func_value_to_string);
+    ~TestOperation_List_Base() {
 
+    }
 
-// Function - Implementation
-template <class Value>
-Pair<ListOperation, Pair<int, Value>> makeListOperation(
-		ListOperation 	operation,
-		int 			position,
-		Value 			value) {
+    // operation
+    // ...
 
-	// fix parameter
-	switch (operation) {
-		case ListOperation::PUSH_BACK:
-			return Pair<ListOperation, Pair<int, Value>>(operation, Pair<int, Value>(0, value));
-		case ListOperation::POP_BACK:
-			return Pair<ListOperation, Pair<int, Value>>(operation, Pair<int, Value>(0, 0));
-		case ListOperation::CLEAR:
-			return Pair<ListOperation, Pair<int, Value>>(operation, Pair<int, Value>(0, 0));
-		case ListOperation::AT:
-			return Pair<ListOperation, Pair<int, Value>>(operation, Pair<int, Value>(position, value));
-		case ListOperation::NOT_AT:
-			return Pair<ListOperation, Pair<int, Value>>(operation, Pair<int, Value>(position, value));
-		default:
-			return Pair<ListOperation, Pair<int, Value>>(ListOperation::NONE, Pair<int, Value>(0, 0));
-	}
-}
+// Operator Overload
+public:
+	// ...
+};
 
 
 template <class Value>
-int runOperation_List(
-		_List_<Value>									&list,
-		Pair<ListOperation, Pair<int, Value>>			*operation_list,
-		int												size_operation,
-		const std::function<void(const std::string&)>	*func_log,
-		const std::function<std::string(const int)>		*func_key_to_string,
-		const std::function<std::string(const Value)>	*func_value_to_string) {
+class TestOperation_List_PushBack: public TestOperation_List_Base<Value> {
+// Class
+public:
+	struct Config {
+	public:
+		Value value;
+	};
 
-	// CONFIG
-	Value temp;
+// Data
+public:
+    Config config;
 
-	// CORE
-	for (int i = 0; i < size_operation; ++i) {
-		// get operation
-		auto &operation = operation_list[i];
+// Function
+public:
+    // init and del
+    TestOperation_List_PushBack(Value value):
+    config({value})
+    {
+    }
 
-		// string for logging
-		std::string content;
-		content += getOperationString(operation, func_key_to_string, func_value_to_string);
+    ~TestOperation_List_PushBack() {
 
-		// run operation
-		try {
+    }
 
-			switch (operation.first) {
-				case ListOperation::PUSH_BACK:
-					// push_back
-					// [ignore, value(used to insert)]
-					list.push_back(operation.second.second);
-					break;
+    // operation
+	int8 execute(void *object, std::string *output = nullptr) override {
+		if (object == nullptr) return -1;
+		auto *parameter =
+				(typename TestOperation_List_Base<Value>::Parameter*)object;
 
-				case ListOperation::POP_BACK:
-					// erase
-					// [ignore, ignore]
-					list.pop_back();
-					break;
+		// operation
+		if (parameter->list == nullptr) return -1;
+		parameter->list->push_back(config.value);
 
-				case ListOperation::CLEAR:
-					// clear
-					// [ignore, ignore]
-					list.clear();
-					break;
+		// observe
+		// ...
 
-				case ListOperation::AT:
-					// at
-					// [position, value(used to compare with list)]
-					temp = list.at(operation.second.first);
-					if (temp != operation.second.second) throw std::runtime_error("");
-					break;
+		// result
+		if (output == nullptr) return 0;
+		if (this->func_value_to_string == nullptr) return 0;
 
-				case ListOperation::NOT_AT:
-					// not at
-					// [position, value(used to compare with list)]
-					temp = list.at(operation.second.first);
-					if (temp == operation.second.second) throw std::runtime_error("");
-					break;
+		*output += "PushBack: ";
+		*output += (*this->func_value_to_string)(config.value);
+		*output += "\n";
 
-				default:
-					break;
-			}
-
-		} catch(...) {
-			content += " => false";
-			if (func_log != nullptr) (*func_log)(content);
-			return i;
-		}
-
-		// log
-		content += " => true";
-		if (func_log != nullptr) (*func_log)(content);
+		return 0;
 	}
 
-	// RET
-	// everything is fine
-	return 0;
-
-}
+// Operator Overload
+public:
+	// ...
+};
 
 
 template <class Value>
-std::string getOperationString(
-		const Pair<ListOperation, Pair<int, Value>>		&operation,
-		const std::function<std::string(const int)>		*func_key_to_string,
-		const std::function<std::string(const Value)>	*func_value_to_string) {
+class TestOperation_List_PopBack: public TestOperation_List_Base<Value> {
+// Class
+public:
+	struct Config {
+	public:
+	};
 
-	// CHECK
-	if (func_key_to_string == nullptr || func_value_to_string == nullptr) return std::string();
+// Data
+public:
+	Config config;
 
-	// CONFIG
-	std::string content;
-
-	// CORE
-	switch (operation.first) {
-		case ListOperation::PUSH_BACK:
-			// push_back
-			// [ignore, value(used to insert)]
-			content += "push_back: value: ";
-			content += (*func_value_to_string)(operation.second.second);
-			break;
-
-		case ListOperation::POP_BACK:
-			// pop_back
-			// [ignore, ignore]
-			content += "pop_back";
-			break;
-
-		case ListOperation::CLEAR:
-			// clear
-			// [ignore, ignore]
-			content += "clear";
-			break;
-
-		case ListOperation::AT:
-			// at
-			// [position, value(used to compare with list)]
-			content += "at: position: ";
-			content += (*func_key_to_string)(operation.second.first);
-			break;
-
-		case ListOperation::NOT_AT:
-			// at
-			// [position, value(used to compare with list)]
-			content += "not at: position: ";
-			content += (*func_key_to_string)(operation.second.first);
-			break;
-			break;
-
-		default:
-			break;
+// Function
+public:
+	// init and del
+	TestOperation_List_PopBack():
+	config({})
+	{
 	}
 
-	// RET
-	return content;
-}
+	~TestOperation_List_PopBack() {
+	}
+
+	// operation
+	int8 execute(void *object, std::string *output = nullptr) override {
+		if (object == nullptr) return -1;
+		auto *parameter =
+				(typename TestOperation_List_Base<Value>::Parameter*)object;
+
+		// operation
+		if (parameter->list == nullptr) return -1;
+		parameter->list->pop_back();
+
+		// observe
+		// ...
+
+		// result
+		if (output == nullptr) return 0;
+		if (this->func_value_to_string == nullptr) return 0;
+
+		*output += "PopBack";
+		*output += "\n";
+
+		return 0;
+	}
+
+// Operator Overload
+public:
+	// ...
+};
+
+
+template <class Value>
+class TestOperation_List_Clear: public TestOperation_List_Base<Value> {
+// Class
+public:
+	struct Config {
+	public:
+	};
+
+// Data
+public:
+	Config config;
+
+// Function
+public:
+	// init and del
+	TestOperation_List_Clear():
+	config({})
+	{
+	}
+
+	~TestOperation_List_Clear() {
+
+	}
+
+	// operation
+	int8 execute(void *object, std::string *output = nullptr) override {
+		if (object == nullptr) return -1;
+		auto *parameter =
+				(typename TestOperation_List_Base<Value>::Parameter*)object;
+
+		// operation
+		if (parameter->list == nullptr) return -1;
+		parameter->list->clear();
+
+		// observe
+		// ...
+
+		// result
+		if (output == nullptr) return 0;
+		if (this->func_value_to_string == nullptr) return 0;
+
+		*output += "Clear";
+		*output += "\n";
+
+		return 0;
+	}
+
+// Operator Overload
+public:
+	// ...
+};
+
+
+template <class Value>
+class TestOperation_List_At: public TestOperation_List_Base<Value> {
+// Class
+public:
+	struct Config {
+	public:
+		int		index;
+		Value	value;
+		bool	is_present;
+	};
+
+// Data
+public:
+	Config config;
+
+// Function
+public:
+	// init and del
+	TestOperation_List_At(int index, Value value, bool is_present = true):
+	config({index, value, is_present})
+	{
+	}
+
+	~TestOperation_List_At() {
+	}
+
+	// operation
+	int8 execute(void *object, std::string *output = nullptr) override {
+		if (object == nullptr) return -1;
+		auto *parameter =
+				(typename TestOperation_List_Base<Value>::Parameter*)object;
+
+		// operation
+		if (parameter->list == nullptr) return -1;
+		Value value = parameter->list->at(config.index);
+
+		// observe
+		int8_t ret = 0;
+		if ((value == config.value) != config.is_present) ret = 1;
+
+		// result
+		if (output == nullptr) return 0;
+		if (this->func_value_to_string == nullptr) return 0;
+
+		*output += "At: index: ";
+		*output += std::to_string(config.index);
+		*output += ", value: ";
+		*output += (*this->func_value_to_string)(config.value);
+		*output += ", (";
+		*output += ret == 0 ? "true" : "false";
+		*output += ")\n";
+
+		return 0;
+	}
+
+// Operator Overload
+public:
+	// ...
+};
+
+
+// Function
+// ...
 
 
 // Namespace-End - Algo

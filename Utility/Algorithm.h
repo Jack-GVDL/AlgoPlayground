@@ -20,8 +20,8 @@ namespace Algo {
 //#define max(a,b) (((a)>(b))?(a):(b))
 //#define min(a,b) (((a)< b))?(a):(b))
 
-#define max(a,b) std::max(a,b)
-#define min(a,b) std::min(a,b)
+//#define max(a,b) std::max(a,b)
+//#define min(a,b) std::min(a,b)
 
 
 // Data Structure
@@ -97,6 +97,18 @@ static inline void memcpy(void *dst, const void *src, unsigned int n) {
 		src_++;
 		n--;
 	}
+}
+
+
+template <class T>
+static inline T min(T a, T b) {
+	return a < b ? a : b;
+}
+
+
+template <class T>
+static inline T max(T a, T b) {
+	return a > b ? a : b;
 }
 
 

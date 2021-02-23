@@ -20,15 +20,7 @@ namespace Algo {
 
 
 // Enum
-//enum class HashOperation {
-//	INSERT,
-//	ERASE,
-//	CLEAR,
-//	AT,
-//	NOT_AT,
-//	NONE,
-//	SIZE_ENUM
-//};
+// ...
 
 
 // Data Structure
@@ -97,7 +89,7 @@ public:
     }
 
     // operation
-	int8 execute(void *object, const std::function<void(const std::string&)> *output = nullptr) override {
+	int8 execute(void *object, std::string *output = nullptr) override {
 		if (object == nullptr) return -1;
     	auto *parameter =
 				(typename TestOperation_UnorderedMap_Base<Key, Value>::Parameter*)object;
@@ -113,14 +105,11 @@ public:
 		if (output == nullptr) return 0;
 		if (this->func_key_to_string == nullptr || this->func_value_to_string == nullptr) return 0;
 
-		std::string content;
-		content += "Insert key: ";
-		content += (*this->func_key_to_string)(config.key);
-		content += ", value: ";
-		content += (*this->func_value_to_string)(config.value);
-		content += '\n';
-
-		(*output)(content);
+		*output += "Insert key: ";
+		*output += (*this->func_key_to_string)(config.key);
+		*output += ", value: ";
+		*output += (*this->func_value_to_string)(config.value);
+		*output += '\n';
 
 		return 0;
 	}
@@ -162,7 +151,7 @@ public:
 	}
 
 	// operation
-	int8 execute(void *object, const std::function<void(const std::string&)> *output = nullptr) override {
+	int8 execute(void *object, std::string *output = nullptr) override {
 		if (object == nullptr) return -1;
 		auto *parameter =
 				(typename TestOperation_UnorderedMap_Base<Key, Value>::Parameter*)object;
@@ -178,12 +167,9 @@ public:
 		if (output == nullptr) return 0;
 		if (this->func_key_to_string == nullptr || this->func_value_to_string == nullptr) return 0;
 
-		std::string content;
-		content += "Erase key: ";
-		content += (*this->func_key_to_string)(config.key);
-		content += '\n';
-
-		(*output)(content);
+		*output += "Erase key: ";
+		*output += (*this->func_key_to_string)(config.key);
+		*output += '\n';
 
 		return 0;
 	}
@@ -227,7 +213,7 @@ public:
 	}
 
 	// operation
-	int8 execute(void *object, const std::function<void(const std::string&)> *output = nullptr) override {
+	int8 execute(void *object, std::string *output = nullptr) override {
 		if (object == nullptr) return -1;
 		auto *parameter =
 				(typename TestOperation_UnorderedMap_Base<Key, Value>::Parameter*)object;
@@ -237,7 +223,6 @@ public:
 		Value value = parameter->unordered_map->at(config.key);
 
 		// observe
-		// observation is not expected
 		int8_t ret = 0;
 		if ((value == config.value) != config.is_present) ret = 1;
 
@@ -245,16 +230,13 @@ public:
 		if (output == nullptr) return 0;
 		if (this->func_key_to_string == nullptr || this->func_value_to_string == nullptr) return 0;
 
-		std::string content;
-		content += "At key: ";
-		content += (*this->func_key_to_string)(config.key);
-		content += ", value: ";
-		content += (*this->func_value_to_string)(value);
-		content += " (";
-		content += ret == 0 ? "true" : "false";
-		content += ")\n";
-
-		(*output)(content);
+		*output += "At key: ";
+		*output += (*this->func_key_to_string)(config.key);
+		*output += ", value: ";
+		*output += (*this->func_value_to_string)(value);
+		*output += ", (";
+		*output += ret == 0 ? "true" : "false";
+		*output += ")\n";
 
 		return ret;
 	}
@@ -295,7 +277,7 @@ public:
 	}
 
 	// operation
-	int8 execute(void *object, const std::function<void(const std::string&)> *output = nullptr) override {
+	int8 execute(void *object, std::string *output = nullptr) override {
 		if (object == nullptr) return -1;
 		auto *parameter =
 				(typename TestOperation_UnorderedMap_Base<Key, Value>::Parameter*)object;
@@ -311,11 +293,8 @@ public:
 		if (output == nullptr) return 0;
 		if (this->func_key_to_string == nullptr || this->func_value_to_string == nullptr) return 0;
 
-		std::string content;
-		content += "Clear ";
-		content += "\n";
-
-		(*output)(content);
+		*output += "Clear ";
+		*output += "\n";
 
 		return 0;
 	}
