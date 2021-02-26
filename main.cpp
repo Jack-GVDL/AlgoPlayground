@@ -15,6 +15,7 @@ bool Test_testVector();  // test the iterator
 bool Test_testLinked();  // test the iterator
 bool Test_testMap();
 bool Test_testSort_QuickSort();
+bool Test_testSelect_QuickSelect();
 
 
 // Operation
@@ -24,7 +25,8 @@ int main() {
 //	Test_testVector();
 //	Test_testLinked();
 //	Test_testMap();
-	Test_testSort_QuickSort();
+//	Test_testSort_QuickSort();
+	Test_testSelect_QuickSelect();
     return 0;
 }
 
@@ -324,5 +326,39 @@ bool Test_testSort_QuickSort() {
 		printf("%i ", number_list[i]);
 	}
 
+	return true;
+}
+
+
+bool Test_testSelect_QuickSelect() {
+	// CONFIG
+	Vector<int> vector;
+	for (int i = 0; i < 30; ++i) vector.push_back(getRandomInt() % 100);
+
+	Vector<int> vector_sorted(vector);
+	sort_QuickSort(vector_sorted.data(), sizeof(int), vector_sorted.size() * sizeof(int), compare);
+
+	// CORE
+	// show the sorted result
+	for (int i = 0; i < vector_sorted.size(); ++i)  printf("%i ", vector_sorted[i]);
+	printf("\n");
+
+	// do selection
+	unsigned int index;
+	void *target;
+
+	index = 6;
+	target = select_QuickSelect(vector.data(), sizeof(int), vector.size() * sizeof(int), compare, index);
+	printf("Target: index: %i, value: %i\n", index, *(reinterpret_cast<int*>(target)));
+
+	index = 15;
+	target = select_QuickSelect(vector.data(), sizeof(int), vector.size() * sizeof(int), compare, index);
+	printf("Target: index: %i, value: %i\n", index, *(reinterpret_cast<int*>(target)));
+
+	index = 2;
+	target = select_QuickSelect(vector.data(), sizeof(int), vector.size() * sizeof(int), compare, index);
+	printf("Target: index: %i, value: %i\n", index, *(reinterpret_cast<int*>(target)));
+
+	// RET
 	return true;
 }

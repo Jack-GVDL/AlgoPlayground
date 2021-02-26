@@ -1,11 +1,11 @@
 //
 // Author: Jack Tse
-// Date of creation: 23/2/2021
+// Date of creation: 26/2/2021
 // Email: jacktsetcy@gmail.com
 //
 
-#ifndef ALGORITEMIMPLEMENTATION_SORT_H
-#define ALGORITEMIMPLEMENTATION_SORT_H
+#ifndef ALGORITEMIMPLEMENTATION_SELECT_H
+#define ALGORITEMIMPLEMENTATION_SELECT_H
 
 
 // Import
@@ -24,27 +24,31 @@ namespace Algo {
 
 
 // Function - Prototype
-// public
-void sort_QuickSort(void *data, unsigned int offset, unsigned int size, int8(*compare)(void*, void*));
-void sort_MergeSort(void *data, unsigned int offset, unsigned int size, int8(*compare)(void*, void*));
-
-// should only be used internal
-void _sort_QuickSort_(
+void* select_QuickSelect(
 		void *data, unsigned int offset, unsigned int size, int8(*compare)(void*, void*),
-		void *buffer);
+		unsigned int index);
 
-unsigned int _sort_QuickSort_Partition_(
+// should be used internal
+void* _select_QuickSelect_(
+		void *data, unsigned int offset, unsigned int size, int8(*compare)(void*, void*),
+		unsigned int index, void *buffer);
+
+unsigned int _select_QuickSelect_Partition_(
 		void *data, unsigned int offset, unsigned int size, int8(*compare)(void*, void*),
 		unsigned int pivot, void *buffer, int8 *is_front_continue);
 
 
 // Function - Implementation
-void sort_QuickSort(void *data, unsigned int offset, unsigned int size, int8(*compare)(void*, void*)) {
+void* select_QuickSelect(
+		void *data, unsigned int offset, unsigned int size, int8(*compare)(void*, void*),
+		unsigned int index) {
+
 	// check
-	if (data == nullptr)	return;
-	if (offset == 0)		return;
-	if (size == 0)			return;
-	if (size <= offset)		return;
+	if (data == nullptr) 		return nullptr;
+	if (offset == 0) 			return nullptr;
+	if (size == 0) 				return nullptr;
+	if (size <= offset) 		return nullptr;
+	if (index >= size / offset) return nullptr;
 
 	// allocate space for buffer
 	// first part is for swap
@@ -52,47 +56,38 @@ void sort_QuickSort(void *data, unsigned int offset, unsigned int size, int8(*co
 	void *buffer = malloc(offset * 2);
 
 	// actual sorting routine
-	_sort_QuickSort_(data, offset, size, compare, buffer);
+	void *ret = _select_QuickSelect_(data, offset, size, compare, index, buffer);
 
 	// free buffer
 	free(buffer);
+
+	// RET
+	return ret;
 }
 
 
-void sort_MergeSort(void *data, unsigned int offset, unsigned int size, int8(*compare)(void*, void*)) {
-	// check
-	if (data == nullptr)	return;
-	if (offset == 0)		return;
-	if (size == 0)			return;
-	if (size <= offset)		return;
-
-	// TODO
-}
-
-
-// assumed: buffer must be large enough
-void _sort_QuickSort_(
+void* _select_QuickSelect_(
 		void *data, unsigned int offset, unsigned int size, int8(*compare)(void*, void*),
-		void *buffer) {
+		unsigned int index, void *buffer) {
 
 	// base condition
 	const unsigned int n = size / offset;
-	if (n <= 1) return;
-	
+	if (n <= 1) return data;
+
 	// ----- partition -----
 	// get point of pivot
 	unsigned int pivot = getRandomInt() % n;
 
 	// partition
 	int8 is_front_continue = 0;
-	unsigned int mid = _sort_QuickSort_Partition_(data, offset, size, compare, pivot, buffer, &is_front_continue);
-	
+	unsigned int mid = _select_QuickSelect_Partition_(data, offset, size, compare, pivot, buffer, &is_front_continue);
+
 	// ----- special case -----
 	// check if can early stop or needed to redo the partition
 	if (mid == n) {
 
 		// early stopping: list contain only one value
-		if (!is_front_continue) return;
+		if (!is_front_continue) return data;
 
 		// redo partition: previous partition cannot split the list into front and end
 		// as the list must contain more than one value
@@ -104,20 +99,24 @@ void _sort_QuickSort_(
 		}
 
 		// do the partition again
-		mid = _sort_QuickSort_Partition_(data, offset, size, compare, pivot, buffer, &is_front_continue);
+		mid = _select_QuickSelect_Partition_(data, offset, size, compare, pivot, buffer, &is_front_continue);
 	}
 
-	// ----- D&C -----
-	// part   | start | end (exclusive)   | size
-	// front  | 0	  | mid 			  | mid
-	// back	  | mid	  | size			  | size - mid
-	if (is_front_continue) _sort_QuickSort_(data, offset, mid * offset, compare, buffer);
-	_sort_QuickSort_(getTargetPtr(data, void, mid * offset), offset, size - mid * offset, compare, buffer);
+	// ----- recursion -----
+	// front
+	if (index < mid) {
+		if (!is_front_continue) return data;  // early stopping
+		return _select_QuickSelect_(data, offset, mid * offset, compare, index, buffer);
+	}
+
+	// back
+	return _select_QuickSelect_(
+			getTargetPtr(data, void, mid * offset), offset, size - mid * offset, compare,
+			index - mid, buffer);
 }
 
 
-// assumed: buffer must be large enough
-unsigned int _sort_QuickSort_Partition_(
+unsigned int _select_QuickSelect_Partition_(
 		void *data, unsigned int offset, unsigned int size, int8(*compare)(void*, void*),
 		unsigned int pivot, void *buffer, int8 *is_front_continue) {
 
@@ -163,4 +162,4 @@ unsigned int _sort_QuickSort_Partition_(
 }
 
 
-#endif //ALGORITEMIMPLEMENTATION_SORT_H
+#endif //ALGORITEMIMPLEMENTATION_SELECT_H
