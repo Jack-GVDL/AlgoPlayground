@@ -155,7 +155,7 @@ public:
 	    	// CONFIG
 	    	intptr_t direction = is_front ? backward : forward;
 
-	    	// clear stack (i.e. clear path)
+	    	// clear stack (i.e. clear path_queue)
 	    	stack.clear();
 
 	    	// get the starting point
@@ -326,7 +326,7 @@ public:
 			// CONFIG
 			intptr_t direction = is_front ? backward : forward;
 
-			// clear stack (i.e. clear path)
+			// clear stack (i.e. clear path_queue)
 			stack.clear();
 
 			// get the starting point
@@ -769,7 +769,7 @@ protected:
     	if (node->is_black == (uint8)RBNodeColor::RED) return;
 
     	// self: BLACK; child: RED
-    	// then deleting self (BLACK) will make the children to have 1 less BLACK node on their path
+    	// then deleting self (BLACK) will make the children to have 1 less BLACK node on their path_queue
     	// then mark child node to BLACK
     	if (node_child->is_black == (uint8)RBNodeColor::RED) {
     		node_child->is_black = (uint8)RBNodeColor::BLACK;

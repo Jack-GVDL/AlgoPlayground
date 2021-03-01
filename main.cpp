@@ -2,6 +2,7 @@
 #include <Utility.h>
 #include "Map/Map.h"
 #include "List/List.h"
+#include <Path.h>
 
 
 // Namespace
@@ -16,6 +17,7 @@ bool Test_testLinked();  // test the iterator
 bool Test_testMap();
 bool Test_testSort_QuickSort();
 bool Test_testSelect_QuickSelect();
+bool Test_testShortestPath_Dijkstra();
 
 
 // Operation
@@ -26,7 +28,8 @@ int main() {
 //	Test_testLinked();
 //	Test_testMap();
 //	Test_testSort_QuickSort();
-	Test_testSelect_QuickSelect();
+//	Test_testSelect_QuickSelect();
+	Test_testShortestPath_Dijkstra();
     return 0;
 }
 
@@ -360,5 +363,49 @@ bool Test_testSelect_QuickSelect() {
 	printf("Target: index: %i, value: %i\n", index, *(reinterpret_cast<int*>(target)));
 
 	// RET
+	return true;
+}
+
+
+// node for testing
+struct NodeTest {
+	int value;
+};
+
+
+bool Test_testShortestPath_Dijkstra() {
+	// create node
+	NodeTest node_list[10];
+	for (int i = 0; i < 10; ++i) {
+		node_list[i] = { i };
+	}
+
+	std::unordered_map<void*, std::vector<Pair<void*, unsigned int>>> node_table;
+	for (int i = 0; i < 10; ++i) {
+		node_table.insert(make_pair( (void*)(node_list + i), std::vector<Pair<void*, unsigned int>>() ));
+	}
+
+	// create connection
+	node_table[(void*)(node_list + 0)].push_back(makePair((void*)(node_list + 1), (unsigned int)1));
+	node_table[(void*)(node_list + 0)].push_back(makePair((void*)(node_list + 2), (unsigned int)2));
+	node_table[(void*)(node_list + 1)].push_back(makePair((void*)(node_list + 3), (unsigned int)3));
+	node_table[(void*)(node_list + 2)].push_back(makePair((void*)(node_list + 3), (unsigned int)5));
+
+	// tree
+	std::unordered_map<void*, void*> tree;
+
+	// dijkstra
+	bool ret = getShortestPath_Dijkstra(node_table, (void*)(node_list + 0), (void*)(node_list + 3), tree);
+	printf("Path is %s\n", ret ? "found" : "not found");
+
+	// print tree
+	for (auto& it : tree) {
+		if (it.second == nullptr) {
+			printf("%i %s \n", ((NodeTest*)(it.first))->value, "end" );
+			continue;
+		}
+		printf("%i %i \n", ((NodeTest*)(it.first))->value, ((NodeTest*)(it.second))->value );
+	}
+
 	return true;
 }
